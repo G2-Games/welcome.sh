@@ -49,6 +49,9 @@ greeting () {
 #=====Battery Info=====#
 battery () {
   # Set battery level
+  # Set default to prevent errors
+  batlvl=0
+
   if [ -a /sys/class/power_supply/BAT0/capacity ];
   then
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
@@ -125,7 +128,7 @@ updates () {
   fi
 
   # Check for Flatpak
-  if command -v flatpak &> /dev/null && [ $flatupd == "on" ];
+  if command -v flatpak &> /dev/null && [ $flatpakupd == "on" ];
   then
     flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
   fi
@@ -147,8 +150,11 @@ updates () {
 }
 
 #=========SETUP========#
-# Select which parts you want active by commenting them out, and re ordering them.
-flatupd="on" # Check for flatpak updates, this slows the script down a lot
+# Select which parts you want active by commenting them out
+# You can also re order them to change how they display!
+# For example, on a desktop, disabling the battery message is a good idea
+
+flatpakupd="on" # Check for flatpak updates, this slows startup down *a lot*
 
 welcome
 greeting
