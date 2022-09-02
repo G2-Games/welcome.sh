@@ -133,6 +133,7 @@ updates () {
 
   # Add all update counts together
   updates=$(($debian + $arch + $flatpak + fedora))
+  updates=10
 
   # Check the update amounts and print them out
   if [ $updates -eq 1 ];
@@ -152,7 +153,7 @@ flatupd="on" # Check for flatpak updates, this slows the script down a lot
 
 welcome
 greeting
-battery
 clock
+battery
 updates #< This makes startup slower
 echo # Properly line break at the end
