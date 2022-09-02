@@ -133,7 +133,6 @@ updates () {
 
   # Add all update counts together
   updates=$(($debian + $arch + $flatpak + fedora))
-  updates=10
 
   # Check the update amounts and print them out
   if [ $updates -eq 1 ];
