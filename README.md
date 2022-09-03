@@ -14,7 +14,7 @@ My goal with this script is to keep it simple, just a single line that gives use
 
 ### Installing:
 #### Via Curl
-Run `bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome-sh/main/install.sh)"` to install it. It installs to `~/.welcome/welcome.sh`
+Run `bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"` to install it. It installs to `~/.welcome/welcome.sh`
 
 Run it again to uninstall.
 
