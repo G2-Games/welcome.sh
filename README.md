@@ -14,9 +14,17 @@ My goal with this script is to keep it simple, just a single line that gives use
 
 ### Installing:
 #### Via Curl
-Run `bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"` to install it. It installs to `~/.welcome/welcome.sh`
+```
+bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
+``` 
+#### Or wget
+```
+bash -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
+```
 
-Run it again to uninstall.
+It installs to `~/.welcome/welcome.sh`, and adds a line to the bottom of `~/.bashrc`
+
+Run again to uninstall.
 
 #### Manual Installation
 To use it, download `welcome.sh` and place it in your home directory. Then add `/home/$USER/welcome.sh` to your `.bashrc`
