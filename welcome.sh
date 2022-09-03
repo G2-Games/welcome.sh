@@ -13,10 +13,10 @@ UNDR='\e[4m'
 BLNK='\e[5m'
 USRC='\e[1;32m'
 
-NIGH='\e[35;1m'
-MORN='\e[33m'
-AFTN='\e[33;1m'
-EVEN='\e[31;1m'
+NIGH='\e[0;35m'
+MORN='\e[0;33m'
+AFTN='\e[0;93m'
+EVEN='\e[0;91m'
 
 #========Welcome=======#
 welcome () {
@@ -28,6 +28,7 @@ welcome () {
 greeting () {
   # Set the hour
   hr=$(date +%H)
+  hr=22
 
   if [ $hr -le 11 ] && [ $hr -gt 6 ];
   then
@@ -49,7 +50,7 @@ greeting () {
 #=====Battery Info=====#
 battery () {
   # Set battery level
-  # Set default to prevent errors
+  # Set a default to prevent errors
   batlvl=0
 
   if [ -a /sys/class/power_supply/BAT0/capacity ];
@@ -69,7 +70,10 @@ battery () {
     if [ $batlvl -le 15 ];
     then
       echo -en "${CRIT}$batlvl%${NCOL}. "
-      echo -en "- ${NORM}You should probably recharge${NCOL}. "
+      if [ $rechargenotif == "on" ];
+      then
+        echo -en "- ${NORM}You should probably recharge${NCOL}. "
+      fi
     elif [ $batlvl -le 30 ];
     then
       echo -en "${LOW}$batlvl%${NCOL}. "
@@ -91,9 +95,9 @@ clock () {
 
 #========Updates=======#
 updates () {
-  deb=0
-  aur=0
-  pacman=0
+  # Set defaults to prevent errors
+  debian=0
+  arch=0
   fedora=0
   flatpak=0
 
@@ -117,6 +121,7 @@ updates () {
     arch=$(pacman -Qu 2> /dev/null | wc -l)
   fi
 
+  # Check for Fedora things
   if command -v dnf &> /dev/null;
   then
     fedora=$(dnf list updates 2> /dev/null | wc -l)
@@ -135,7 +140,7 @@ updates () {
 
 
   # Add all update counts together
-  updates=$(($debian + $arch + $flatpak + fedora))
+  updates=$(($debian + $arch + fedora + $flatpak))
 
   # Check the update amounts and print them out
   if [ $updates -eq 1 ];
@@ -151,10 +156,11 @@ updates () {
 
 #=========SETUP========#
 # Select which parts you want active by commenting them out
-# You can also re order them to change how they display!
 # For example, on a desktop, disabling the battery message is a good idea
+# You can also re order them to change how they display!
 
-flatpakupd="on" # Check for flatpak updates, this slows startup down *a lot*
+flatpakupd="off"    # Check for flatpak updates, this slows startup down A LOT
+rechargenotif="off" # Notify that you should recharge if below 15%
 
 welcome
 greeting
