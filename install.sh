@@ -1,4 +1,5 @@
 #!/bin/bash
+
 version='0.1'
 bashrc="/home/$USER/.bashrc"
 originaldir=$PWD
@@ -18,7 +19,7 @@ then
 else
     tput sc
     echo -e "\e[35mwelcome.sh\e[0m already installed!"
-    echo -en "\e[31mDo you want to uninstall welcome.sh?\e[0m\n\e[36mY/n\e[0m"
+    echo -en "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
     read -p " " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]
