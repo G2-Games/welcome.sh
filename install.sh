@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-version='0.1'
+version='0.2'
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
