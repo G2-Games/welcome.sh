@@ -6,8 +6,8 @@ This is a nice little script for your `.bashrc` that greets you on every launch,
 My goal with this script is to keep it simple, just a single line that gives useful information when you start the terminal.
 
 ### Installing:
-#### Curl Script
-Run `. <(curl https://raw.githubusercontent.com/G2-Games/welcome-sh/main/install.sh)` to install it. 
+#### Via Curl
+Run `bash -c "$(curl https://raw.githubusercontent.com/G2-Games/welcome-sh/main/install.sh)"` to install it. 
 
 Run it again to uninstall.
 
