@@ -28,7 +28,6 @@ welcome () {
 greeting () {
   # Set the hour
   hr=$(date +%H)
-  hr=22
 
   if [ $hr -le 11 ] && [ $hr -gt 6 ];
   then
