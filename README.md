@@ -17,9 +17,15 @@ My goal with this script is to keep it simple, just a single line that gives use
 ```
 bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
 ``` 
+```
+zsh -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
+```
 #### Or wget
 ```
 bash -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
+```
+```
+zsh -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
 ```
 
 It installs to `~/.welcome/welcome.sh`, and adds a line to the bottom of `~/.bashrc`
