@@ -1,5 +1,5 @@
 #!/bin/bash
-version=0.1
+version='0.1'
 bashrc="/home/$USER/.bashrc"
 originaldir=$PWD
 
@@ -9,7 +9,7 @@ then
     echo "Welcome! Installing..."
     cd /home/$USER
     mkdir -p /home/$USER/.welcome
-    curl -S https://github.com/G2-Games/welcome.sh/releases/download/v$version/welcome.sh --output /home/$USER/.welcome/welcome.sh
+    curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output /home/$USER/.welcome/welcome.sh
     chmod +x /home/$USER/.welcome/welcome.sh
     echo 'bash /home/$USER/.welcome/welcome.sh' >> $bashrc
     tput rc el ed
