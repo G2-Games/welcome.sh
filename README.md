@@ -7,7 +7,7 @@ My goal with this script is to keep it simple, just a single line that gives use
 
 ### Installing:
 #### Via Curl
-Run `bash -c "$(curl https://raw.githubusercontent.com/G2-Games/welcome-sh/main/install.sh)"` to install it. 
+Run `bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome-sh/main/install.sh)"` to install it. 
 
 Run it again to uninstall.
 
