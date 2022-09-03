@@ -1,4 +1,4 @@
-# welcome-sh
+# welcome.sh
 ![image](https://user-images.githubusercontent.com/72430668/188241809-fd94292e-23a4-4bba-bb76-82b863bbdddb.png)
 ### A nice welcome script for Bash
 This is a nice little script for your `.bashrc` that greets you on every launch, with some helpful (and customizable!) information.
@@ -29,6 +29,7 @@ Currently you can update by uninstalling and reinstalling, but this wipes all se
 
 ### Configs:
 To configure settings, open `welcome.sh` in your text editor of choice and go to the bottom. There, you'll find a few settings:
+
 ![image](https://user-images.githubusercontent.com/72430668/188285444-96b98d3e-d69c-47a8-ae77-44c855c6e854.png)
 
 Here, you can re-arrange the modules, and turn off and on flatpak and recharge notifications. I recommend leaving flatpak off as it makes startup incredibly slow. 
