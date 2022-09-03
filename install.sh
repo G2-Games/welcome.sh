@@ -12,7 +12,7 @@ then
     chmod +x /home/$USER/.welcome/welcome.sh
     echo 'bash /home/$USER/.welcome/welcome.sh' >> $bashrc
     tput rc el ed
-    echo "Installed!"
+    echo -e "\e[36mInstalled!\e[0m"
 else
     tput sc
     echo -e "\e[35mwelcome.sh\e[0m already installed!"
@@ -25,10 +25,10 @@ else
         rmdir /home/$USER/.welcome
         sed -i 's#bash /home/$USER/.welcome/welcome.sh##g' $bashrc
         tput rc el ed
-        echo "Uninstalled!"
+        echo "\e[36mUninstalled!\e[0m"
     else
         tput rc el ed
-        echo "Cancelled."
+        echo "\e[32mCancelled.\e[0m"
     fi
 
 fi
