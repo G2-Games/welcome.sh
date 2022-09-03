@@ -52,10 +52,10 @@ battery () {
   # Set a default to prevent errors
   batlvl=0
 
-  if [ -a /sys/class/power_supply/BAT0/capacity ];
+  if [[ -a "/sys/class/power_supply/BAT0/capacity" ]];
   then
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
-  elif [ -a /sys/class/power_supply/BAT1/capacity ];
+  elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]];
   then
     batlvl=$(cat /sys/class/power_supply/BAT1/capacity)
   fi
@@ -69,7 +69,7 @@ battery () {
     if [ $batlvl -le 15 ];
     then
       echo -en "${CRIT}$batlvl%${NCOL}. "
-      if [ $rechargenotif == "on" ];
+      if [ "$rechargenotif" = "on" ];
       then
         echo -en "- ${NORM}You should probably recharge${NCOL}. "
       fi
@@ -132,7 +132,7 @@ updates () {
   fi
 
   # Check for Flatpak
-  if command -v flatpak &> /dev/null && [ $flatpakupd == "on" ];
+  if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ];
   then
     flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
   fi
