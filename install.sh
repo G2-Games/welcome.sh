@@ -1,6 +1,7 @@
 #!/bin/bash
 version=0.1
 bashrc="/home/$USER/.bashrc"
+originaldir=$PWD
 
 if ! grep -q 'bash /home/$USER/.welcome/welcome.sh' $bashrc;
 then
@@ -12,7 +13,8 @@ then
     chmod +x /home/$USER/.welcome/welcome.sh
     echo 'bash /home/$USER/.welcome/welcome.sh' >> $bashrc
     tput rc el ed
-    echo -e "Installed!"
+    echo -e "\e[36mInstalled! \e[0m"
+    cd $originaldir
 else
     tput sc
     echo -e "\e[35mwelcome.sh\e[0m already installed!"
@@ -25,10 +27,10 @@ else
         rmdir /home/$USER/.welcome
         sed -i 's#bash /home/$USER/.welcome/welcome.sh##g' $bashrc
         tput rc el ed
-        echo -e "Uninstalled!"
+        echo -e "\e[36mUninstalled! \e[0m"
     else
         tput rc el ed
-        echo -e "Cancelled."
+        echo -e "\e[32mCancelled. \e[0m"
     fi
 
 fi
