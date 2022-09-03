@@ -9,12 +9,12 @@ then
     echo "Welcome! Installing..."
     cd /home/$USER
     mkdir -p /home/$USER/.welcome
-    curl https://raw.githubusercontent.com/G2-Games/welcome-sh/main/welcome.sh --output /home/$USER/.welcome/welcome.sh
+    curl -q https://raw.githubusercontent.com/G2-Games/welcome-sh/main/welcome.sh --output /home/$USER/.welcome/welcome.sh
     chmod +x /home/$USER/.welcome/welcome.sh
     echo 'bash /home/$USER/.welcome/welcome.sh' >> $bashrc
     tput rc el ed
     echo -e "\e[36mInstalled! \e[0m"
-    cd $originaldir
+    cd "$originaldir"
 else
     tput sc
     echo -e "\e[35mwelcome.sh\e[0m already installed!"
@@ -32,5 +32,4 @@ else
         tput rc el ed
         echo -e "\e[32mCancelled. \e[0m"
     fi
-
 fi
