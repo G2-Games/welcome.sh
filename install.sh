@@ -1,4 +1,4 @@
-version=0.2
+version=0.2.1
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
@@ -11,7 +11,16 @@ then
         echo "Welcome! Installing..."
         cd /home/$USER
         mkdir -p /home/$USER/.welcome
-        curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output /home/$USER/.welcome/welcome.sh
+        if which curl >/dev/null ;
+        then
+            curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output /home/$USER/.welcome/welcome.sh
+        elif which wget >/dev/null ;
+        then
+            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output-file /home/$USER/.welcome/welcome.sh
+        else
+            echo "Cannot download, neither wget nor curl is available."
+            exit 1
+        fi
         chmod +x /home/$USER/.welcome/welcome.sh
         if [[ "$environment" = "/usr/bin/bash" ]];
         then
