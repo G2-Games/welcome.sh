@@ -1,6 +1,4 @@
-#!/bin/zsh
-
-version='0.2'
+version=0.2
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
@@ -43,8 +41,12 @@ then
         then
             rm /home/$USER/.welcome/welcome.sh
             rmdir /home/$USER/.welcome
-            sed -i 's#bash /home/$USER/.welcome/welcome.sh##g' $bashrc # Try from both
-            sed -i 's#zsh /home/$USER/.welcome/welcome.sh##g' $zshrc
+            line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
+            line=${line%:*}
+            sed -i "${line}d" $bashrc
+            line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
+            line=${line%:*}
+            sed -i "${line}d" $zshrc
             tput rc el ed
             echo -e "\e[36mUninstalled! \e[0m"
         else
@@ -53,5 +55,5 @@ then
         fi
     fi
 else
-    echo "This script can only be installed in bash or zsh."
+    printf "\e[31;5mERROR:\e[0m \e[31;3mThis script can only be installed in bash or zsh.\e[0m\n"
 fi
