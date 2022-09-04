@@ -1,44 +1,52 @@
-#!/bin/bash
-
-#====Customization=====#
-# Set colors for ease of use
-NCOL='\e[0m'
-CRIT='\e[31m'
-LOW='\e[33m'
-NORM='\e[32m'
-FULL='\e[3;4;92m'
-BOLD='\e[1m'
-ITAL='\e[3m'
-UNDR='\e[4m'
-BLNK='\e[5m'
-USRC='\e[1;32m'
-
-NIGH='\e[0;35m'
-MORN='\e[0;33m'
-AFTN='\e[0;93m'
-EVEN='\e[0;91m'
+# For random colors; this will only generate colors with sufficient luma to be readable on a dark background... you may have to modify it for light
+randcolor() {
+  cluma=0
+  while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
+  do
+    cr=$((0 + $RANDOM % 255))
+    crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
+    cg=$((0 + $RANDOM % 255))
+    cgl=$(echo "$cg 0.299" | awk '{print $1 * $2}')
+    cb=$((0 + $RANDOM % 255))
+    cbl=$(echo "$cb 0.299" | awk '{print $1 * $2}')
+    cluma=$(echo "$crl $cgl $cbl" | awk '{print $1 + $2 + $3}')
+    loops=$((loops+1))
+  done
+  echo "\e[38;2;${cr};${cg};${cb}m"
+}
 
 #========Welcome=======#
 welcome () {
   # Print the welcome message
-  echo -en "Welcome, ${USRC}$USER${NCOL}. "
+  echo -en "Welcome, ${USRC}${BOLD}$USER${NCOL}. "
+}
+
+#=========Time=========#
+clock () {
+  # Set the current hour and minute
+  hour12=$(date +%I)
+  minute=$(date +%M)
+
+  # Print the time
+  echo -en "The time is ${TIME}$hour12${BLNK}:${NCOL}${TIME}$minute${NCOL}. "
 }
 
 #=======Greeting=======#
 greeting () {
   # Set the hour
-  hr=$(date +%H)
+  hour=$(date +%H)
+  hour=17
 
-  if [ $hr -le 11 ] && [ $hr -gt 6 ];
+  if [ $hour -le 11 ] && [ $hour -gt 6 ];
   then
     echo -en "It's ${MORN}morning${NCOL}. "
-  elif [ $hr -eq 12 ];
+  elif [ $hour -eq 12 ];
   then
     echo -en "It's ${AFTN}noon${NCOL}. "
-  elif [ $hr -le 16 ] && [ $hr -gt 12 ];
+  elif [ $hour -le 16 ] && [ $hour -gt 12 ];
   then
     echo -en "It's ${AFTN}afternoon${NCOL}. "
-  elif [ $hr -le 19 ] && [ $hr -gt 16 ];
+  elif [ $hour -le 19 ] && [ $hour -gt 16 ];
   then
     echo -en "It's ${EVEN}evening${NCOL}. "
   else
@@ -80,16 +88,6 @@ battery () {
       echo -en "${NORM}$batlvl%${NCOL}. "
     fi
   fi
-}
-
-#=========Time=========#
-clock () {
-  # Set the current hour and minute
-  hour=$(date +%I)
-  minute=$(date +%M)
-
-  # Print the time
-  echo -en "The time is ${BOLD}$hour${BLNK}:${NCOL}${BOLD}$minute${NCOL}. "
 }
 
 #========Updates=======#
@@ -152,6 +150,27 @@ updates () {
     echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
   fi
 }
+
+#=========COLORS=======#
+# Set colors for ease of use
+NCOL='\e[0m'
+CRIT='\e[31m'
+LOW='\e[33m'
+NORM='\e[32m'
+FULL='\e[3;4;92m'
+BOLD='\e[1m'
+ITAL='\e[3m'
+UNDR='\e[4m'
+BLNK='\e[5m'
+
+TIME='\e[38;2;224;146;252;1m' # Clock color
+USRC=$(randcolor) # <-----------Username color
+
+# Greeting colors
+NIGH='\e[38;2;200;107;209m'
+MORN='\e[38;2;255;164;74m'
+AFTN='\e[38;2;250;245;110m'
+EVEN='\e[38;2;171;54;3m'
 
 #=========SETUP========#
 # Select which parts you want active by commenting them out
