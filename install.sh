@@ -41,12 +41,18 @@ then
         then
             rm /home/$USER/.welcome/welcome.sh
             rmdir /home/$USER/.welcome
-            line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
-            line=${line%:*}
-            sed -i "${line}d" $bashrc
-            line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
-            line=${line%:*}
-            sed -i "${line}d" $zshrc
+            if grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
+            then
+                line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
+                line=${line%:*}
+                sed -i "${line}d" $bashrc
+            fi
+            if grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
+            then
+                line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
+                line=${line%:*}
+                sed -i "${line}d" $zshrc
+            fi
             tput rc el ed
             echo -e "\e[36mUninstalled! \e[0m"
         else
