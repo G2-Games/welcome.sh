@@ -43,8 +43,22 @@ Currently you can update by uninstalling and reinstalling, but this wipes all se
 ### Configs:
 To configure settings, open `welcome.sh` in your text editor of choice and go to the bottom. There, you'll find a few settings:
 
-![github2](https://user-images.githubusercontent.com/72430668/188288031-78727633-79da-42c4-8f1e-1fdafb9fe1a2.png)
+```bash
+#=========SETUP========#
+# Select which parts you want active by commenting them out
+# For example, on a desktop, disabling the battery message is a good idea
+# You can also re order them to change how they display!
 
+flatpakupd="off"    # Check for flatpak updates, this slows startup down A LOT
+rechargenotif="off" # Notify that you should recharge if below 15%
+
+welcome
+greeting
+clock
+battery
+updates #< This makes startup slower
+echo # Properly line break at the end
+```
 
 Here, you can re-arrange the modules, and turn off and on flatpak and recharge notifications. I recommend leaving flatpak off as it makes startup incredibly slow. 
 
