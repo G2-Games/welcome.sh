@@ -13,16 +13,20 @@ My goal with this script is to keep it simple, just a single line that gives use
 
 ### Installing:
 #### Via Curl
+<sub>Bash:</sub>
 ```
 bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
 ``` 
+<sub>Zsh:</sub>
 ```
 zsh -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
 ```
 #### Or wget
+<sub>Bash:</sub>
 ```
 bash -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
 ```
+<sub>Zsh:</sub>
 ```
 zsh -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
 ```
@@ -45,9 +49,10 @@ To configure settings, open `welcome.sh` in your text editor of choice and go to
 
 ```bash
 #=========SETUP========#
-# Select which parts you want active by commenting them out
-# For example, on a desktop, disabling the battery message is a good idea
-# You can also re order them to change how they display!
+# Select which parts you want active by commenting them out #
+# For example, on a desktop, disabling the battery message  #
+# is a good idea. You can also re order them to change how  #
+# they display!                                             #
 
 flatpakupd="off"    # Check for flatpak updates, this slows startup down A LOT
 rechargenotif="off" # Notify that you should recharge if below 15%
@@ -55,7 +60,7 @@ rechargenotif="off" # Notify that you should recharge if below 15%
 welcome
 greeting
 clock
-battery
+#battery
 updates #< This makes startup slower
 echo # Properly line break at the end
 ```
