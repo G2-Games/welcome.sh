@@ -1,34 +1,29 @@
-# For random colors; this will only generate colors with sufficient luma to be readable on a dark background... you may have to modify it for light
-randcolor() {
-  cluma=0
-  while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
-  do
-    cr=$((0 + $RANDOM % 255))
-    crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
-    cg=$((0 + $RANDOM % 255))
-    cgl=$(echo "$cg 0.299" | awk '{print $1 * $2}')
-    cb=$((0 + $RANDOM % 255))
-    cbl=$(echo "$cb 0.299" | awk '{print $1 * $2}')
-    cluma=$(echo "$crl $cgl $cbl" | awk '{print $1 + $2 + $3}')
-    loops=$((loops+1))
-  done
-  echo "\e[38;2;${cr};${cg};${cb}m"
-}
-
 #========Welcome=======#
 welcome () {
+  msg="Welcome" # Default
+  if [ "$randgreeting" = "on" ]; then
+    greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
+    msg=${greetings[$(($RANDOM % $(echo ${#greetings[@]})))]}
+  fi
+
   # Print the welcome message
-  echo -en "Welcome, ${USRC}${BOLD}$USER${NCOL}. "
+  echo -en "$msg, ${USRC}${BOLD}$USER${NCOL}. "
 }
 
 #=========Time=========#
 clock () {
   # Set the current hour and minute
-  hour12=$(date +%I)
+  if [ "$twelvehour" = "on" ]; then
+    hour="\b$(date +%_I)"
+    ampm=$(date +%p)
+  else
+    hour=$(date +%H)
+    bksp="\b \b"
+  fi
   minute=$(date +%M)
 
   # Print the time
-  echo -en "The time is ${TIME}$hour12${BLNK}:${NCOL}${TIME}$minute${NCOL}. "
+  echo -en "The time is ${TIME}$hour${BLNK}:${NCOL}${TIME}$minute $bksp${ampm}${NCOL}. "
 }
 
 #=======Greeting=======#
@@ -36,17 +31,13 @@ greeting () {
   # Set the hour
   hour=$(date +%H)
 
-  if [ $hour -le 11 ] && [ $hour -gt 6 ];
-  then
+  if [ $hour -le 11 ] && [ $hour -gt 6 ]; then
     echo -en "It's ${MORN}morning${NCOL}. "
-  elif [ $hour -eq 12 ];
-  then
+  elif [ $hour -eq 12 ]; then
     echo -en "It's ${AFTN}noon${NCOL}. "
-  elif [ $hour -le 16 ] && [ $hour -gt 12 ];
-  then
+  elif [ $hour -le 16 ] && [ $hour -gt 12 ]; then
     echo -en "It's ${AFTN}afternoon${NCOL}. "
-  elif [ $hour -le 19 ] && [ $hour -gt 17 ];
-  then
+  elif [ $hour -le 19 ] && [ $hour -gt 17 ]; then
     echo -en "It's ${EVEN}evening${NCOL}. "
   else
     echo -en "It's ${NIGH}night${NCOL}. "
@@ -59,29 +50,23 @@ battery () {
   # Set a default to prevent errors
   batlvl=0
 
-  if [[ -a "/sys/class/power_supply/BAT0/capacity" ]];
-  then
+  if [[ -a "/sys/class/power_supply/BAT0/capacity" ]]; then
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
-  elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]];
-  then
+  elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]]; then
     batlvl=$(cat /sys/class/power_supply/BAT1/capacity)
   fi
 
   # Change color depending on level
-  if [ $batlvl -eq 100 ];
-  then
+  if [ $batlvl -eq 100 ]; then
     echo -en "The battery is ${FULL}fully charged${NCOL}. "
   else
     echo -en "The battery level is "
-    if [ $batlvl -le 15 ];
-    then
+    if [ $batlvl -le 15 ]; then
       echo -en "${CRIT}$batlvl%${NCOL}. "
-      if [ "$rechargenotif" = "on" ];
-      then
+      if [ "$rechargenotif" = "on" ]; then
         echo -en "- ${NORM}You should probably recharge${NCOL}. "
       fi
-    elif [ $batlvl -le 30 ];
-    then
+    elif [ $batlvl -le 30 ]; then
       echo -en "${LOW}$batlvl%${NCOL}. "
     else
       echo -en "${NORM}$batlvl%${NCOL}. "
@@ -100,37 +85,30 @@ updates () {
   # Check for updates from different places...
 
   # Check for APT
-  if command -v apt &> /dev/null;
-  then
+  if command -v apt &> /dev/null; then
     debian=$(apt-get -s dist-upgrade -V | grep '=>' | awk '{print$1}' | wc -l)
   fi
 
   # Check for different Arch things
-  if command -v yay &> /dev/null;
-  then
+  if command -v yay &> /dev/null; then
     arch=$(yay -Qu 2> /dev/null | wc -l)
-  elif command -v paru &> /dev/null;
-  then
+  elif command -v paru &> /dev/null; then
     arch=$(paru -Quq 2> /dev/null | wc -l)
-  elif command -v pacman &> /dev/null;
-  then
+  elif command -v pacman &> /dev/null; then
     arch=$(pacman -Qu 2> /dev/null | wc -l)
   fi
 
   # Check for Fedora things
-  if command -v dnf &> /dev/null;
-  then
+  if command -v dnf &> /dev/null; then
     fedora=$(dnf list updates 2> /dev/null | wc -l)
     fedora=$((fedora-1))
-  elif command -v yum &> /dev/null;
-  then
+  elif command -v yum &> /dev/null; then
     fedora=$(yum list updates 2> /dev/null | wc -l)
     fedora=$((fedora-1))
   fi
 
   # Check for Flatpak
-  if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ];
-  then
+  if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
     flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
   fi
 
@@ -139,28 +117,47 @@ updates () {
   updates=$(($debian + $arch + fedora + $flatpak))
 
   # Check the update amounts and print them out
-  if [ $updates -eq 1 ];
-  then
+  if [ $updates -eq 1 ]; then
     echo -en "You have ${NORM}1${NCOL} pending update. "
-  elif [ $updates -eq 0 ];
-  then
+  elif [ $updates -eq 0 ]; then
     echo -en "You have no pending updates. "
   else
     echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
   fi
 }
 
+#=====Random Color=====#
+randcolor() {
+  # For random colors; this will only generate colors with sufficient
+  # perceptual luma to be readable on a dark background... you may have
+  # to modify it for light
+  cluma=0
+  while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
+  do
+    cr=$((0 + $RANDOM % 255))
+    crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
+    cg=$((0 + $RANDOM % 255))
+    cgl=$(echo "$cg 0.299" | awk '{print $1 * $2}')
+    cb=$((0 + $RANDOM % 255))
+    cbl=$(echo "$cb 0.299" | awk '{print $1 * $2}')
+    cluma=$(echo "$crl $cgl $cbl" | awk '{print $1 + $2 + $3}')
+    loops=$((loops+1))
+  done
+  echo "\e[38;2;${cr};${cg};${cb}m"
+}
+
 #=========COLORS=======#
-# Set colors for ease of use
 NCOL='\e[0m'
-CRIT='\e[31m'
-LOW='\e[33m'
-NORM='\e[32m'
-FULL='\e[3;4;92m'
 BOLD='\e[1m'
 ITAL='\e[3m'
 UNDR='\e[4m'
 BLNK='\e[5m'
+
+# Battery level colors
+CRIT='\e[31m'
+LOW='\e[33m'
+NORM='\e[32m'
+FULL='\e[3;4;92m'
 
 TIME='\e[38;2;224;146;252;1m' # Clock color
 USRC=$(randcolor) # <-----------Username color
@@ -172,12 +169,16 @@ AFTN='\e[38;2;250;245;110m'
 EVEN='\e[38;2;171;54;3m'
 
 #=========SETUP========#
-# Select which parts you want active by commenting them out
-# For example, on a desktop, disabling the battery message is a good idea
-# You can also re order them to change how they display!
+# Select which parts you want active by  #
+# commenting them out. For example, on a #
+# desktop, disabling the battery message #
+# is a good idea. You can also re-order  #
+# them to change how they display!       #
 
-flatpakupd="off"    # Check for flatpak updates, this slows startup down A LOT
-rechargenotif="off" # Notify that you should recharge if below 15%
+randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
+twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
+rechargenotif="off" #< Notify that you should recharge if below 15%
+flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 
 welcome
 greeting
