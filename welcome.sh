@@ -35,7 +35,6 @@ clock () {
 greeting () {
   # Set the hour
   hour=$(date +%H)
-  hour=17
 
   if [ $hour -le 11 ] && [ $hour -gt 6 ];
   then
@@ -46,7 +45,7 @@ greeting () {
   elif [ $hour -le 16 ] && [ $hour -gt 12 ];
   then
     echo -en "It's ${AFTN}afternoon${NCOL}. "
-  elif [ $hour -le 19 ] && [ $hour -gt 16 ];
+  elif [ $hour -le 19 ] && [ $hour -gt 17 ];
   then
     echo -en "It's ${EVEN}evening${NCOL}. "
   else

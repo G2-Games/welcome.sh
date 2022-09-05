@@ -16,7 +16,7 @@ then
             curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output /home/$USER/.welcome/welcome.sh
         elif which wget >/dev/null ;
         then
-            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output-file /home/$USER/.welcome/welcome.sh
+            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P /home/$USER/.welcome/
         else
             echo "Cannot download, neither wget nor curl is available."
             exit 1
