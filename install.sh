@@ -1,4 +1,4 @@
-version=0.2.2
+version=0.2.3
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
