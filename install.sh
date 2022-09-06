@@ -2,13 +2,13 @@ version=0.2.4
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
-environment=$(readlink /proc/$$/exe)
-if [[ "$environment" = "/usr/bin/bash" ]] || [[ "$environment" = "/usr/bin/zsh" ]];
+environment=$(readlink /proc/$$/exe | grep -o 'bash\|zsh')
+if [[ "$environment" = "bash" ]] || [[ "$environment" = "zsh" ]];
 then
     if ! grep -q 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -q 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
     then
-        tput sc
         echo "Welcome! Installing..."
+        tput sc
         cd /home/$USER
         mkdir -p /home/$USER/.welcome
         if which curl >/dev/null ;
@@ -22,11 +22,11 @@ then
             exit 1
         fi
         chmod +x /home/$USER/.welcome/welcome.sh
-        if [[ "$environment" = "/usr/bin/bash" ]];
+        if [[ "$environment" = "bash" ]];
         then
             echo 'bash /home/$USER/.welcome/welcome.sh' >> $bashrc
             echo "Installing to bashrc"
-        elif [[ "$environment" = "/usr/bin/zsh" ]];
+        elif [[ "$environment" = "zsh" ]];
         then
             echo 'zsh /home/$USER/.welcome/welcome.sh' >> $zshrc
             echo "Installing to zshrc"
@@ -38,16 +38,19 @@ then
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
         echo -en "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
-        if [[ "$environment" = "/usr/bin/bash" ]]
+        if [[ "$environment" = "bash" ]]
         then
             read -p " " -n 1 -r
-        elif [[ "$environment" = "/usr/bin/zsh" ]]
+        elif [[ "$environment" = "zsh" ]]
         then
             read -q "REPLY? " -n 1 -r
         fi
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]
         then
+            tput rc el ed
+            echo "Goodbye. Uninstalling..."
+            tput sc
             rm /home/$USER/.welcome/welcome.sh
             rmdir /home/$USER/.welcome
             if grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
@@ -70,5 +73,5 @@ then
         fi
     fi
 else
-    printf "\e[31;5mERROR:\e[0m \e[31;3mThis script can only be installed in bash or zsh.\e[0m\n"
+    printf "\e[31;5mERROR:\e[0m \e[31;3mThis script can only be installed in Bash or Zsh.\e[0m\n"
 fi
