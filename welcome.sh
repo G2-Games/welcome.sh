@@ -137,7 +137,7 @@ randcolor() {
   # to modify it for light
   cluma=0
   loops=0
-  while [[ $(printf %.0f $cluma) -le $1 ]] && [[ $loops -le 10 ]];
+  while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
   do
     cr=$((0 + $RANDOM % 255))
     crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
@@ -186,8 +186,5 @@ rechargenotif="off" #< Notify that you should recharge if below 15%
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 
 welcome
-greeting
-clock
-battery
-updates #< This makes startup slower
+
 echo # Properly line break at the end
