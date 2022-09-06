@@ -14,7 +14,7 @@ welcome () {
 clock () {
   # Set the current hour and minute
   if [ "$twelvehour" = "on" ]; then
-    if [ $hour -lt 10 ]; then
+    if [ $(date +%_I) -lt 10 ]; then
       hour="\b$(date +%_I)"
     else
       hour="$(date +%_I)"
@@ -186,5 +186,8 @@ rechargenotif="off" #< Notify that you should recharge if below 15%
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 
 welcome
-
+greeting
+clock
+battery
+updates
 echo # Properly line break at the end
