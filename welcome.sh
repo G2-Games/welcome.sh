@@ -14,7 +14,11 @@ welcome () {
 clock () {
   # Set the current hour and minute
   if [ "$twelvehour" = "on" ]; then
-    hour="\b$(date +%_I)"
+    if [ $hour -lt 10 ]; then
+      hour="\b$(date +%_I)"
+    else
+      hour="$(date +%_I)"
+    fi
     ampm=$(date +%p)
   else
     hour=$(date +%H)
@@ -132,14 +136,15 @@ randcolor() {
   # perceptual luma to be readable on a dark background... you may have
   # to modify it for light
   cluma=0
-  while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
+  loops=0
+  while [[ $(printf %.0f $cluma) -le $1 ]] && [[ $loops -le 10 ]];
   do
     cr=$((0 + $RANDOM % 255))
     crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
     cg=$((0 + $RANDOM % 255))
-    cgl=$(echo "$cg 0.299" | awk '{print $1 * $2}')
+    cgl=$(echo "$cg 0.587" | awk '{print $1 * $2}')
     cb=$((0 + $RANDOM % 255))
-    cbl=$(echo "$cb 0.299" | awk '{print $1 * $2}')
+    cbl=$(echo "$cb 0.114" | awk '{print $1 * $2}')
     cluma=$(echo "$crl $cgl $cbl" | awk '{print $1 + $2 + $3}')
     loops=$((loops+1))
   done
