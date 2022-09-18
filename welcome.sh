@@ -1,3 +1,5 @@
+version=0.2.5
+
 #========Welcome=======#
 welcome () {
   msg="Welcome" # Default
