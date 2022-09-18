@@ -56,6 +56,8 @@ To configure settings, open `welcome.sh` in your text editor of choice and go to
 # is a good idea. You can also re-order  #
 # them to change how they display!       #
 
+
+greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
 randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
@@ -65,7 +67,7 @@ welcome
 greeting
 clock
 battery
-updates #< This makes startup slower
+updates
 echo # Properly line break at the end
 ```
 
