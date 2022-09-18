@@ -60,12 +60,8 @@ battery () {
     batlvl=$(cat /sys/class/power_supply/BAT1/capacity)
   fi
 
-  if [ $batlvl -ge 100 ]; then
-    batlvl=100
-  fi
-
   # Change color depending on level
-  if [ $batlvl -eq 100 ]; then
+  if [ $batlvl -ge 100 ]; then
     echo -en "The battery is ${FULL}fully charged${NCOL}. "
   else
     echo -en "The battery level is "
