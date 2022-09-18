@@ -2,7 +2,7 @@ version=0.2.5
 bashrc="/home/$USER/.bashrc"
 zshrc="/home/$USER/.zshrc"
 originaldir=$PWD
-environment=$(ps -o args= -p $$ | egrep -m 1 -o '\w{0,5}sh')
+environment=$(readlink /proc/$$/exe | grep -o 'bash\|zsh')
 if [[ "$environment" = "bash" ]] || [[ "$environment" = "zsh" ]];
 then
     if ! grep -q 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -q 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
