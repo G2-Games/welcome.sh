@@ -58,12 +58,14 @@ battery () {
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
   elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]]; then
     batlvl=$(cat /sys/class/power_supply/BAT1/capacity)
+  else
+    batlvl=-1
   fi
 
   # Change color depending on level
   if [ $batlvl -ge 100 ]; then
     echo -en "The battery is ${FULL}fully charged${NCOL}. "
-  else
+  elif [ $batlvl -gt 0 ]; then
     echo -en "The battery level is "
     if [ $batlvl -le 15 ]; then
       echo -en "${CRIT}$batlvl%${NCOL}. "
@@ -86,7 +88,7 @@ updates () {
   fedora=0
   flatpak=0
 
-  # Check for updates from different places...
+  # Check for updates from different places... wonder if there's a better way
 
   # Check for APT
   if command -v apt &> /dev/null; then
@@ -132,9 +134,9 @@ updates () {
 
 #=====Random Color=====#
 randcolor() {
-  # For random colors; this will only generate colors with sufficient
-  # perceptual luma to be readable on a dark background... you may have
-  # to modify it for light
+# For random colors; this will only generate colors with sufficient   #
+# perceptual luma to be readable on a dark background... you may have #
+# to modify it for a light one                                        #
   cluma=0
   loops=0
   while [[ $(printf %.0f $cluma) -le 100 ]] && [[ $loops -le 10 ]];
