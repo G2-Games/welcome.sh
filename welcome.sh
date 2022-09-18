@@ -112,14 +112,17 @@ updates () {
     fedora=$((fedora-1))
   fi
 
+  if command -v brew &> /dev/null; then
+    brew=$(brew outdated 2> /dev/null | wc -l)
+  fi
+
   # Check for Flatpak
   if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
     flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
   fi
 
-
   # Add all update counts together
-  updates=$(($debian + $arch + fedora + $flatpak))
+  updates=$(($debian + $arch + fedora + $flatpak + $brew))
 
   # Check the update amounts and print them out
   if [ $updates -eq 1 ]; then
