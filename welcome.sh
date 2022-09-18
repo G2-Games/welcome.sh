@@ -85,6 +85,7 @@ updates () {
   debian=0
   arch=0
   fedora=0
+  brew=0
   flatpak=0
 
   # Check for updates from different places... wonder if there's a better way
@@ -112,6 +113,7 @@ updates () {
     fedora=$((fedora-1))
   fi
 
+  # Check for Brew  updates
   if command -v brew &> /dev/null; then
     brew=$(brew outdated 2> /dev/null | wc -l)
   fi
@@ -122,7 +124,7 @@ updates () {
   fi
 
   # Add all update counts together
-  updates=$(($debian + $arch + fedora + $flatpak + $brew))
+  updates=$(($debian + $arch + $fedora + $flatpak + $brew))
 
   # Check the update amounts and print them out
   if [ $updates -eq 1 ]; then
