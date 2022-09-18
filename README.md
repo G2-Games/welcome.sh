@@ -10,6 +10,7 @@ My goal with this script is to keep it simple, just a single line that gives use
 - Relatively fast
 - <span title="Please let me know of other things to support!">Works across many distros (update checking support)</span>
 - Clean and simple
+- Customizable
 <hr>
 
 ### Installing:
