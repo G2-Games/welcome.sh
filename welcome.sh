@@ -35,7 +35,7 @@ greeting () {
   hour=$(date +%H)
   greet="It's"
 
-  if [ "$greetingtype" = "on" ]; then
+  if [ "$goodgreeting" = "on" ]; then
     greet="Good"
   fi
 
@@ -198,7 +198,7 @@ randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
-greetingtype="on"
+goodgreeting="on"
 
 welcome
 greeting
