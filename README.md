@@ -1,5 +1,5 @@
 # welcome.sh
-<img src="https://user-images.githubusercontent.com/72430668/188546505-13b5627f-6e11-41f2-809b-5992f24aa25b.png">
+![image](https://user-images.githubusercontent.com/72430668/190891298-c08c8ad8-9270-4549-b3ae-85e48ae2748b.png)
 
 ### A nice welcome script for Bash and Zsh
 This is a nice little script for your `.bashrc` or `.zshrc` that greets you on every launch, with some helpful (and customizable!) information.
@@ -56,8 +56,6 @@ To configure settings, open `welcome.sh` in your text editor of choice and go to
 # is a good idea. You can also re-order  #
 # them to change how they display!       #
 
-
-greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
 randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
@@ -67,7 +65,7 @@ welcome
 greeting
 clock
 battery
-updates
+updates #< This makes startup slower
 echo # Properly line break at the end
 ```
 
