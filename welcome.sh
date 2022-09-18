@@ -2,7 +2,6 @@
 welcome () {
   msg="Welcome" # Default
   if [ "$randgreeting" = "on" ]; then
-    greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
     msg=${greetings[$(($RANDOM % $(echo ${#greetings[@]})))]}
   fi
 
@@ -92,7 +91,7 @@ updates () {
 
   # Check for APT
   if command -v apt &> /dev/null; then
-    debian=$(apt-get -s dist-upgrade -V | grep '=>' | awk '{print$1}' | wc -l)
+    debian=$(apt-get -s dist-upgrade -V 2> /dev/null | grep '=>' | awk '{print$1}' | wc -l)
   fi
 
   # Check for different Arch things
@@ -167,6 +166,7 @@ NORM='\e[32m'
 FULL='\e[3;4;92m'
 
 TIME='\e[38;2;224;146;252;1m' # Clock color
+DATE='\e[38;2;50;168;82;1m'
 USRC=$(randcolor) # <-----------Username color
 
 # Greeting colors
@@ -182,6 +182,8 @@ EVEN='\e[38;2;171;54;3m'
 # is a good idea. You can also re-order  #
 # them to change how they display!       #
 
+
+greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
 randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
