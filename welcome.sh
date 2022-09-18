@@ -33,15 +33,20 @@ clock () {
 greeting () {
   # Set the hour
   hour=$(date +%H)
+  greet="It's"
+
+  if [ "$greetingtype" = "on" ]; then
+    greet="Good"
+  fi
 
   if [ $hour -le 11 ] && [ $hour -gt 6 ]; then
-    echo -en "It's ${MORN}morning${NCOL}. "
+    echo -en "$greet ${MORN}morning${NCOL}. "
   elif [ $hour -eq 12 ]; then
     echo -en "It's ${AFTN}noon${NCOL}. "
   elif [ $hour -le 16 ] && [ $hour -gt 12 ]; then
-    echo -en "It's ${AFTN}afternoon${NCOL}. "
+    echo -en "$greet ${AFTN}afternoon${NCOL}. "
   elif [ $hour -le 19 ] && [ $hour -gt 17 ]; then
-    echo -en "It's ${EVEN}evening${NCOL}. "
+    echo -en "$greet ${EVEN}evening${NCOL}. "
   else
     echo -en "It's ${NIGH}night${NCOL}. "
   fi
@@ -193,6 +198,7 @@ randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00pm vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
+greetingtype="on"
 
 welcome
 greeting
