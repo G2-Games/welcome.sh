@@ -1,5 +1,5 @@
 # welcome.sh
-![image](https://user-images.githubusercontent.com/72430668/190887392-5e7dcc3f-8aba-4c03-add2-86371e4d7714.png)
+![image](https://user-images.githubusercontent.com/72430668/190891298-c08c8ad8-9270-4549-b3ae-85e48ae2748b.png)
 
 ### A nice welcome script for Bash and Zsh
 This is a nice little script for your `.bashrc` or `.zshrc` that greets you on every launch, with some helpful (and customizable!) information.
