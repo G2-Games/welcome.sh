@@ -58,12 +58,13 @@ then
                 line=$(grep -n 'bash ~/.welcome/welcome.sh' $bashrc)
                 line=${line%:*}
                 sed -i "${line}d" $bashrc
+                sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
             fi
             if grep -n 'zsh ~/.welcome/welcome.sh' $zshrc ;
             then
                 line=$(grep -n 'zsh ~/.welcome/welcome.sh' $zshrc)
                 line=${line%:*}
-                sed -i "${line}d" $zshrc
+                sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
             fi
 
             # Check for older versions #
@@ -71,13 +72,13 @@ then
             then
                 line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
                 line=${line%:*}
-                sed -i "${line}d" $bashrc
+                sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
             fi
             if grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
             then
                 line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
                 line=${line%:*}
-                sed -i "${line}d" $zshrc
+                sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
             fi
             # End older version check #
 
