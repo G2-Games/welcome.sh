@@ -53,13 +53,13 @@ greeting () {
   if [ $hour -le 11 ] && [ $hour -gt 6 ]; then
     echo -en "$greet ${MORN}morning${NCOL}. "
   elif [ $hour -eq 12 ]; then
-    echo -en "It's ${AFTN}noon${NCOL}. "
+    echo -en "$greet ${AFTN}noon${NCOL}. "
   elif [ $hour -le 17 ] && [ $hour -gt 12 ]; then
     echo -en "$greet ${AFTN}afternoon${NCOL}. "
   elif [ $hour -le 19 ] && [ $hour -gt 17 ]; then
     echo -en "$greet ${EVEN}evening${NCOL}. "
   else
-    echo -en "It's ${NIGH}night${NCOL}. "
+    echo -en "$greet ${NIGH}night${NCOL}. "
   fi
 }
 
