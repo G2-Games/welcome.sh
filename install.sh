@@ -14,11 +14,15 @@ then
         if which curl >/dev/null ;
         then
             curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-            curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
+            if [[ $(echo $version | sed 's/[.][.]*//g' ) -ge 100 ]]; then
+                curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
+            fi
         elif which wget >/dev/null ;
         then
             wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
+            if [[ $(echo $version | sed 's/[.][.]*//g' ) -ge 100 ]]; then
+                wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~
+            fi
         else
             echo "Cannot download, neither wget nor curl is available."
             exit 1
