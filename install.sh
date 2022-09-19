@@ -5,7 +5,7 @@ originaldir=$PWD
 environment=$(ps -o args= -p $$ | egrep -m 1 -o '\w{0,5}sh' | head -1)
 if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ];
 then
-    if ! grep -q 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -q 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -q 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -q 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
+    if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
     then
         echo "Welcome! Installing in $environment..."
         tput sc
@@ -76,16 +76,16 @@ then
                     exit 1
                 fi
                 # Check for older versions and replace bashrc lines #
-                if grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
+                if grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
                 then
-                    line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
+                    line=$(grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
                     line=${line%:*}
                     sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
                     echo 'bash ~/.welcome/welcome.sh' >> $bashrc
                 fi
-                if grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
+                if grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
                 then
-                    line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
+                    line=$(grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
                     line=${line%:*}
                     sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
                     echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
@@ -117,30 +117,30 @@ then
             rm ~/.welcome/welcome.sh
             rm ~/.welcome/config.cfg
             rmdir ~/.welcome
-            if grep -n 'bash ~/.welcome/welcome.sh' $bashrc ;
+            if grep -sn 'bash ~/.welcome/welcome.sh' $bashrc ;
             then
-                line=$(grep -n 'bash ~/.welcome/welcome.sh' $bashrc)
+                line=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc)
                 line=${line%:*}
                 sed -i "${line}d" $bashrc
                 sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
             fi
-            if grep -n 'zsh ~/.welcome/welcome.sh' $zshrc ;
+            if grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc ;
             then
-                line=$(grep -n 'zsh ~/.welcome/welcome.sh' $zshrc)
+                line=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc)
                 line=${line%:*}
                 sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
             fi
 
             # Check for older versions #
-            if grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
+            if grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
             then
-                line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
+                line=$(grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
                 line=${line%:*}
                 sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
             fi
-            if grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
+            if grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
             then
-                line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
+                line=$(grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
                 line=${line%:*}
                 sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
             fi
