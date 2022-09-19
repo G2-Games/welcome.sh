@@ -211,7 +211,7 @@ rechargenotif="off" #< Notify that you should recharge if below 15%
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
-source ./config.cfg
+source ~/.welcome/config.cfg
 
 welcome
 greeting
