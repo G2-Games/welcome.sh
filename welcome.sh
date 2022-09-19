@@ -3,12 +3,21 @@ version=0.2.5
 #========Welcome=======#
 welcome () {
   msg="Welcome" # Default
+
+  if command -v whoami &>/dev/null ; then
+    usr=$(whoami)
+  elif command -v id &>/dev/null; then
+    usr=$(id -u -n)
+  else
+    usr=$USER
+  fi
+
   if [ "$randgreeting" = "on" ]; then
     msg=${greetings[$(($RANDOM % $(echo ${#greetings[@]})))]}
   fi
 
   # Print the welcome message
-  echo -en "$msg, ${USRC}${BOLD}$USER${NCOL}. "
+  echo -en "$msg, ${USRC}${BOLD}$usr${NCOL}. "
 }
 
 #=========Time=========#
@@ -45,7 +54,7 @@ greeting () {
     echo -en "$greet ${MORN}morning${NCOL}. "
   elif [ $hour -eq 12 ]; then
     echo -en "It's ${AFTN}noon${NCOL}. "
-  elif [ $hour -le 16 ] && [ $hour -gt 12 ]; then
+  elif [ $hour -le 17 ] && [ $hour -gt 12 ]; then
     echo -en "$greet ${AFTN}afternoon${NCOL}. "
   elif [ $hour -le 19 ] && [ $hour -gt 17 ]; then
     echo -en "$greet ${EVEN}evening${NCOL}. "
@@ -98,7 +107,7 @@ updates () {
   # Check for updates from different places... wonder if there's a better way
 
   # Check for APT
-  if command -v apt &> /dev/null; then
+  if command -v apt-get &> /dev/null; then
     debian=$(apt-get -s dist-upgrade -V 2> /dev/null | grep '=>' | awk '{print$1}' | wc -l)
   fi
 

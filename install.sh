@@ -79,6 +79,7 @@ then
                 line=${line%:*}
                 sed -i "${line}d" $zshrc
             fi
+            # End older version check #
 
             tput rc el ed
             echo -e "\e[36mUninstalled! \e[0m"
