@@ -94,3 +94,4 @@ cfgversion=1
 ### TODO:
 - [ ] Fix issues across other distros
 - [ ] Add new features? (Please suggest!)
+- [ ] Improve MacOS functionality
