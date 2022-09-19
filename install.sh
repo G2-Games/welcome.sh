@@ -1,4 +1,4 @@
-version=0.3.0
+version=1.0.0
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
@@ -14,9 +14,11 @@ then
         if which curl >/dev/null ;
         then
             curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
+            curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
         elif which wget >/dev/null ;
         then
             wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
+            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
         else
             echo "Cannot download, neither wget nor curl is available."
             exit 1
@@ -24,12 +26,12 @@ then
         chmod +x ~/.welcome/welcome.sh
         if [[ "$environment" = "bash" ]];
         then
-            echo 'bash ~/.welcome/welcome.sh' >> $bashrc
             echo "Installing to bashrc"
+            echo 'bash ~/.welcome/welcome.sh' >> $bashrc
         elif [[ "$environment" = "zsh" ]];
         then
-            echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
             echo "Installing to zshrc"
+            echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
         fi
         cd "$originaldir"
         tput rc el ed
@@ -37,6 +39,63 @@ then
     else
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
+        if [[ $(echo $version | sed 's/[.][.]*//g' ) -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+            echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
+            if [[ "$environment" = "bash" ]]
+            then
+                read -p " " -n 1 -r
+            elif [[ "$environment" = "zsh" ]]
+            then
+                read -q "REPLY? " -n 1 -r
+            fi
+            echo
+            if [[ $REPLY =~ ^[Yy]$ ]]
+            then
+                tput rc el ed
+                echo "Updating..."
+                tput sc
+                rm ~/.welcome/welcome.sh
+                if which curl >/dev/null ;
+                then
+                    curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
+                    if ! [[ -a "~/.welcome/config.cfg" ]]; then
+                        curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
+                    fi
+                elif which wget >/dev/null ;
+                then
+                    wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
+                    if ! [[ -a "~/.welcome/config.cfg" ]]; then
+                        wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
+                    fi
+                else
+                    echo "Cannot download, neither Wget nor cURL is available."
+                    exit 1
+                fi
+                # Check for older versions and replace bashrc lines #
+                if grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
+                then
+                    line=$(grep -n 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
+                    line=${line%:*}
+                    sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
+                    echo 'bash ~/.welcome/welcome.sh' >> $bashrc
+                fi
+                if grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
+                then
+                    line=$(grep -n 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
+                    line=${line%:*}
+                    sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
+                    echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
+                fi
+                # End older version check #
+
+                tput rc el ed
+                echo -e "\e[32mUpdated! \e[0m"
+                exit 0
+            else
+                tput rc el ed
+                echo -e "\e[35mwelcome.sh\e[0m already installed!"
+            fi
+        fi
         echo -en "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
         if [[ "$environment" = "bash" ]]
         then
@@ -52,6 +111,7 @@ then
             echo "Goodbye. Uninstalling..."
             tput sc
             rm ~/.welcome/welcome.sh
+            rm ~/.welcome/config.cfg
             rmdir ~/.welcome
             if grep -n 'bash ~/.welcome/welcome.sh' $bashrc ;
             then
@@ -86,7 +146,8 @@ then
             echo -e "\e[36mUninstalled! \e[0m"
         else
             tput rc el ed
-            echo -e "\e[32mCancelled. \e[0m"
+            echo -e "\e[31mCancelled. \e[0m"
+            exit 0
         fi
     fi
 else
