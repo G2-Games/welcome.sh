@@ -210,6 +210,7 @@ greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
 randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00 PM vs 20:00)
 rechargenotif="off" #< Notify that you should recharge if below 15%
+updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
@@ -219,5 +220,5 @@ welcome
 greeting
 clock
 battery
-updates
+if [ "$updatecheck" = "on" ]; then updates; fi
 echo # Properly line break at the end
