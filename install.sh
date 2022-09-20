@@ -54,7 +54,7 @@ then
                 tput rc el ed
                 echo "Updating..."
                 tput sc
-                mv ~/.welcome/welcome.sh ~/.welcome/welcome.sh.bkup
+                rm ~/.welcome/welcome.sh
                 if which curl >/dev/null ;
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
@@ -69,7 +69,6 @@ then
                     fi
                 else
                     echo -e "\e[31mCannot update, neither Wget nor cURL is available!\e[0m"
-                    mv ~/.welcome/welcome.sh.bkup ~/.welcome/welcome.sh
                     exit 1
                 fi
 
