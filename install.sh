@@ -2,7 +2,7 @@ version=1.0.0
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
-environment=$(ps -o args= -p $$ | egrep -m 1 -o '\w{0,5}sh' | head -1)
+environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
 if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ];
 then
     if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
