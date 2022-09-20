@@ -1,4 +1,4 @@
-version=1.0.1
+version=1.0.0
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
@@ -21,7 +21,7 @@ then
         then
             wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
             if [[ $(echo $version | sed 's/[.][.]*//g' ) -ge 100 ]]; then
-                wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~
+                wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
             fi
         else
             echo "Cannot download, neither wget nor curl is available."
@@ -45,13 +45,8 @@ then
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
         if [[ $(echo $version | sed 's/[.][.]*//g' ) -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
-            if [[ "$environment" = "bash" ]]
-            then
-                read -p " " -n 1 -r
-            elif [[ "$environment" = "zsh" ]]
-            then
-                read -q "REPLY? " -n 1 -r
-            fi
+            if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
+            elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]
             then
@@ -101,13 +96,8 @@ then
             fi
         fi
         echo -en "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
-        if [[ "$environment" = "bash" ]]
-        then
-            read -p " " -n 1 -r
-        elif [[ "$environment" = "zsh" ]]
-        then
-            read -q "REPLY? " -n 1 -r
-        fi
+        if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
+        elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]
         then
