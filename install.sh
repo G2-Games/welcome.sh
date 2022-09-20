@@ -1,9 +1,17 @@
 version="${1:-1.0.1}"
 vernum=$(echo $version | sed 's/[.][.]*//g' )
+cfgver=1
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
 environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
+getversion () {
+    if ! [[ -a $1 ]]; then
+        echo "0"
+    else
+        grep version ~/.welcome/$1 | sed 's/.*=//' | sed 's/[.][.]*//g'
+    fi
+}
 if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ];
 then
     if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
@@ -44,7 +52,7 @@ then
     else
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
-        if [[ $vernum -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+        if [[ $vernum -gt $(getversion welcome.sh) ]]; then
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
@@ -57,13 +65,13 @@ then
                 if which curl >/dev/null ;
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-                    if ! [ -a ~/.welcome/config.cfg ] && [[ $vernum -ge 100 ]]; then
+                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(getversion config.cfg) ]]; then
                         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
                     fi
                 elif which wget >/dev/null ;
                 then
                     wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-                    if ! [ -a ~/.welcome/config.cfg ] && [[ $vernum -ge 100 ]]; then
+                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(getversion config.cfg) ]]; then
                         wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
                     fi
                 else
