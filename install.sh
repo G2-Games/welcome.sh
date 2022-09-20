@@ -49,8 +49,7 @@ then
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
             echo
-            if [[ $REPLY =~ ^[Yy]$ ]]
-            then
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
                 tput rc el ed
                 echo "Updating..."
                 tput sc
@@ -58,13 +57,13 @@ then
                 if which curl >/dev/null ;
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-                    if ! [[ -a "~/.welcome/config.cfg" ]] && [[ $vernum -ge 100 ]]; then
+                    if ! [ -a ~/.welcome/config.cfg ] && [[ $vernum -ge 100 ]]; then
                         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
                     fi
                 elif which wget >/dev/null ;
                 then
                     wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-                    if ! [[ -a "~/.welcome/config.cfg" ]] && [[ $vernum -ge 100 ]]; then
+                    if ! [ -a ~/.welcome/config.cfg ] && [[ $vernum -ge 100 ]]; then
                         wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
                     fi
                 else
@@ -99,8 +98,7 @@ then
         if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
         elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
         echo
-        if [[ $REPLY =~ ^[Yy]$ ]]
-        then
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
             tput rc el ed
             echo "Goodbye. Uninstalling..."
             tput sc
