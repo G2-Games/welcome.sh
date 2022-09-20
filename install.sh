@@ -1,6 +1,5 @@
 version="${1:-1.0.2}"
 vernum=$(echo $version | sed 's/[.][.]*//g' )
-cfgver=2
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
@@ -46,6 +45,7 @@ then
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
         if [[ $vernum -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+            cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v$version/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
