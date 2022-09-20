@@ -73,13 +73,6 @@ then
                     exit 1
                 fi
 
-                if [[ -a "~/.welcome/welcome.sh" ]]; then # Check if update succeeded
-                    rm ~/.welcome/welcome.sh.bkup
-                else
-                    mv ~/.welcome/welcome.sh.bkup ~/.welcome/welcome.sh
-                    echo "Update failed! Restoring..."
-                fi
-
                 # Check for older versions and replace bashrc lines
                 lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
                 lines=$(printf '%s\n' "$( echo "$lines" )" | sort | tac | tr '\n' ' '; echo)
