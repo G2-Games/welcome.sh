@@ -51,7 +51,7 @@ then
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]; then
-                if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+                if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') ]] && [ -a ~/.welcome/config.cfg ]; then
                     echo -en "New config version available. Do you want to \e[31moverwrite\e[0m your config?\n\e[36mY/n\e[0m"
                     if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
                     elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
@@ -59,6 +59,10 @@ then
                     if [[ $REPLY =~ ^[Yy]$ ]]; then
                         overcfg=1
                     fi
+                elif [ $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') -lt 100 ]; then
+                    overcfg=1
+                else
+                    overcfg=0
                 fi
                 tput rc el ed
                 echo "Updating..."
@@ -68,6 +72,7 @@ then
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
                     if [[ $vernum -ge 100 ]] && [[ $overcfg -gt 0 ]]; then
+                        echo "Backing up: config.cfg >> config_old.cfg"
                         mv ~/.welcome/config.cfg ~/.welcome/config_old.cfg
                         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
                     fi
@@ -75,6 +80,7 @@ then
                 then
                     wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
                     if [[ $vernum -ge 100 ]] && [[ $overcfg -gt 0 ]]; then
+                        echo "Backing up: config.cfg >> config_old.cfg"
                         mv ~/.welcome/config.cfg ~/.welcome/config_old.cfg
                         wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
                     fi
@@ -116,6 +122,7 @@ then
             tput sc
             rm ~/.welcome/welcome.sh
             rm ~/.welcome/config.cfg
+            rm ~/.welcome/config_old.cfg 2> /dev/null
             rmdir ~/.welcome
 
             #remove all lines that match the string
