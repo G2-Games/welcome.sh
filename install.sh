@@ -1,17 +1,10 @@
 version="${1:-1.0.2}"
 vernum=$(echo $version | sed 's/[.][.]*//g' )
-cfgver=1
+cfgver=2
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
 environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
-getversion () {
-    if ! [[ -a $1 ]]; then
-        echo "0"
-    else
-        grep version ~/.welcome/$1 | sed 's/.*=//' | sed 's/[.][.]*//g'
-    fi
-}
 if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ];
 then
     if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
