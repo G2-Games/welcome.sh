@@ -52,7 +52,7 @@ then
     else
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
-        if [[ $vernum -gt $(getversion welcome.sh) ]]; then
+        if [[ $vernum -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
@@ -65,13 +65,13 @@ then
                 if which curl >/dev/null ;
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(getversion config.cfg) ]]; then
+                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(grep version ~/.welcome/config.cfg | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
                         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
                     fi
                 elif which wget >/dev/null ;
                 then
                     wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(getversion config.cfg) ]]; then
+                    if [[ $vernum -ge 100 ]] && [[ $cfgver -gt $(grep version ~/.welcome/config.cfg | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
                         wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
                     fi
                 else
