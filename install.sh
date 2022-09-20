@@ -92,7 +92,7 @@ then
                 echo 'bash ~/.welcome/welcome.sh' >> $bashrc
 
                 lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
-                lines=$(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo)
+                lines=$(printf '%s\n' "$( echo "$lines" )" | sort | tac | tr '\n' ' '; echo)
                 for i in $( echo "$lines" ); do
                     sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
                 done
@@ -126,7 +126,7 @@ then
             done
 
             lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
-            lines=$(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo)
+            lines=$(printf '%s\n' "$( echo "$lines" )" | sort | tac | tr '\n' ' '; echo)
             for i in $( echo "$lines" ); do
                 sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
             done
