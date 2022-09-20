@@ -93,7 +93,7 @@ then
                 # End older version check #
 
                 tput rc el ed
-                echo -e "\e[32mUpdated! \e[0m"
+                echo -e "\e[32mUpdated to v$version! \e[0m"
                 exit 0
             else
                 tput rc el ed
