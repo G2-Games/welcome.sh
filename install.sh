@@ -1,4 +1,4 @@
-version="${1:-1.0.1}"
+version="${1:-1.0.2}"
 vernum=$(echo $version | sed 's/[.][.]*//g' )
 cfgver=1
 bashrc=~/.bashrc
