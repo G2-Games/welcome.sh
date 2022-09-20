@@ -7,7 +7,7 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ];
 then
     if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
     then
-        echo "Welcome! Installing in $environment..."
+        echo "Welcome! Installing v$version in $environment..."
         tput sc
         cd ~/
         mkdir -p ~/.welcome
@@ -44,7 +44,7 @@ then
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
         if [[ $(echo $version | sed 's/[.][.]*//g' ) -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
-            echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
+            echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]
             then
                 read -p " " -n 1 -r
