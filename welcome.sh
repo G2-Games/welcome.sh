@@ -73,6 +73,8 @@ battery () {
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
   elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]]; then
     batlvl=$(cat /sys/class/power_supply/BAT1/capacity)
+  elif command -v pmset &> /dev/null;then
+    batlvl=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
   else
     batlvl=-1
   fi
