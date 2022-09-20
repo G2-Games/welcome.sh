@@ -81,16 +81,16 @@ then
                 fi
 
                 # Check for older versions and replace bashrc lines
-                lines=($(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g'))
-                lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
-                for i in "${lines[@]}"; do
+                lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
+                lines=$(printf '%s\n' "$( echo "$lines" )" | sort | tac | tr '\n' ' '; echo)
+                for i in $( echo "$lines" ); do
                     sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
                 done
                 echo 'bash ~/.welcome/welcome.sh' >> $bashrc
 
-                lines=($(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g'))
-                lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
-                for i in "${lines[@]}"; do
+                lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
+                lines=$(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo)
+                for i in $( echo "$lines" ); do
                     sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
                 done
                 echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
@@ -116,16 +116,16 @@ then
             rm ~/.welcome/config.cfg
             rmdir ~/.welcome
 
-            #remove all lines with the string
-            lines=($(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g'))
-            lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
-            for i in "${lines[@]}"; do
+            #remove all lines that match the string
+            lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
+            lines=$(printf '%s\n' "$( echo "$lines" )" | sort | tac | tr '\n' ' '; echo)
+            for i in $( echo "$lines" ); do
                 sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
             done
 
-            lines=($(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g'))
-            lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
-            for i in "${lines[@]}"; do
+            lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
+            lines=$(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo)
+            for i in $( echo "$lines" ); do
                 sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
             done
 
