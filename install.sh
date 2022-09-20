@@ -1,4 +1,5 @@
 version="${1:-1.0.1}"
+vernum=$(echo $version | sed 's/[.][.]*//g' )
 bashrc=~/.bashrc
 zshrc=~/.zshrc
 originaldir=$PWD
@@ -14,17 +15,17 @@ then
         if which curl >/dev/null ;
         then
             curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-            if [[ $(echo $version | sed 's/[.][.]*//g' ) -ge 100 ]]; then
+            if [[ $vernum -ge 100 ]]; then
                 curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
             fi
         elif which wget >/dev/null ;
         then
             wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-            if [[ $(echo $version | sed 's/[.][.]*//g' ) -ge 100 ]]; then
+            if [[ $vernum -ge 100 ]]; then
                 wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
             fi
         else
-            echo "Cannot download, neither wget nor curl is available."
+            echo -e "\e[31mCannot download, neither Wget nor cURL is available!\e[0m"
             exit 1
         fi
         chmod +x ~/.welcome/welcome.sh
@@ -43,7 +44,7 @@ then
     else
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
-        if [[ $(echo $version | sed 's/[.][.]*//g' ) -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+        if [[ $vernum -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
@@ -53,39 +54,46 @@ then
                 tput rc el ed
                 echo "Updating..."
                 tput sc
-                rm ~/.welcome/welcome.sh
+                mv ~/.welcome/welcome.sh ~/.welcome/welcome.sh.bkup
                 if which curl >/dev/null ;
                 then
                     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
-                    if ! [[ -a "~/.welcome/config.cfg" ]]; then
+                    if ! [[ -a "~/.welcome/config.cfg" ]] && [[ $vernum -ge 100 ]]; then
                         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
                     fi
                 elif which wget >/dev/null ;
                 then
                     wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
-                    if ! [[ -a "~/.welcome/config.cfg" ]]; then
+                    if ! [[ -a "~/.welcome/config.cfg" ]] && [[ $vernum -ge 100 ]]; then
                         wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
                     fi
                 else
-                    echo "Cannot download, neither Wget nor cURL is available."
+                    echo -e "\e[31mCannot update, neither Wget nor cURL is available!\e[0m"
+                    mv ~/.welcome/welcome.sh.bkup ~/.welcome/welcome.sh
                     exit 1
                 fi
-                # Check for older versions and replace bashrc lines #
-                if grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
-                then
-                    line=$(grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
-                    line=${line%:*}
-                    sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
-                    echo 'bash ~/.welcome/welcome.sh' >> $bashrc
+
+                if [[ -a "~/.welcome/welcome.sh" ]]; then # Check if update succeeded
+                    rm ~/.welcome/welcome.sh.bkup
+                else
+                    mv ~/.welcome/welcome.sh.bkup ~/.welcome/welcome.sh
+                    echo "Update failed! Restoring..."
                 fi
-                if grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
-                then
-                    line=$(grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
-                    line=${line%:*}
-                    sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
-                    echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
-                fi
-                # End older version check #
+
+                # Check for older versions and replace bashrc lines
+                lines=($(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g'))
+                lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
+                for i in "${lines[@]}"; do
+                    sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
+                done
+                echo 'bash ~/.welcome/welcome.sh' >> $bashrc
+
+                lines=($(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g'))
+                lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
+                for i in "${lines[@]}"; do
+                    sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
+                done
+                echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
 
                 tput rc el ed
                 echo -e "\e[32mUpdated to v$version! \e[0m"
@@ -107,34 +115,19 @@ then
             rm ~/.welcome/welcome.sh
             rm ~/.welcome/config.cfg
             rmdir ~/.welcome
-            if grep -sn 'bash ~/.welcome/welcome.sh' $bashrc ;
-            then
-                line=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc)
-                line=${line%:*}
-                sed -i "${line}d" $bashrc
-                sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
-            fi
-            if grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc ;
-            then
-                line=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc)
-                line=${line%:*}
-                sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
-            fi
 
-            # Check for older versions #
-            if grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc ;
-            then
-                line=$(grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc)
-                line=${line%:*}
-                sed "${line}d" $bashrc > file.tmp && mv file.tmp $bashrc
-            fi
-            if grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc ;
-            then
-                line=$(grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc)
-                line=${line%:*}
-                sed "${line}d" $zshrc > file.tmp && mv file.tmp $zshrc
-            fi
-            # End older version check #
+            #remove all lines with the string
+            lines=($(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g'))
+            lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
+            for i in "${lines[@]}"; do
+                sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
+            done
+
+            lines=($(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g'))
+            lines=($(printf '%s\n' "${lines[@]}" | sort | tac | tr '\n' ' '; echo))
+            for i in "${lines[@]}"; do
+                sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
+            done
 
             tput rc el ed
             echo -e "\e[36mUninstalled! \e[0m"
