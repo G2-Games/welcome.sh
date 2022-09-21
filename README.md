@@ -40,7 +40,7 @@ It installs to `~/.welcome/welcome.sh`, and adds a line to the bottom of `~/.bas
 To use it, download the latest `welcome.sh` from <a href="https://github.com/G2-Games/welcome.sh/releases">releases</a> and place it in your home directory. Then add `bash ~/welcome.sh` to your `.bashrc`. It works without the config file, but you can also add that to your home directory for easier manual updates.
 
 ### Updating:
-Run the script again to check for an update. If you have an older version it will prompt you.
+Run the script again to check for an update. If you have an older version it will prompt you. You can update **from** any version **to** any newer version. The proper files will be downloaded as necessary.
 
 <hr>
 
