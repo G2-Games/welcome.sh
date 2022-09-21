@@ -44,22 +44,23 @@ then
     else
         tput sc
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
-        if [[ $vernum -gt $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') ]]; then
+        oldver=$(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') && if ! [ -n "$oldver" ]; then oldver=0; fi
+        if [[ $vernum -gt $oldver ]]; then
             cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v$version/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g') # Check the new config version
-            echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (v$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') => v$version) \n\e[36mY/n\e[0m"
+            echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (\e[36mv$(ver=$(grep version ~/.welcome/welcome.sh | sed 's/.*=//') && if ! [ -n "$ver" ]; then echo -e "\bUnknown"; else echo "$ver"; fi)\e[0m => \e[32mv$version\e[0m) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]; then
                 if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') ]] && [ -a ~/.welcome/config.cfg ]; then
-                    echo -en "New config version available. Do you want to \e[31moverwrite\e[0m your config?\n\e[36mY/n\e[0m"
+                    echo -en "Newer config version available. Do you want to \e[31moverwrite\e[0m your config? \nA backup will be created in the \e[36m.welcome\e[0m folder.\n\e[36mY/n\e[0m"
                     if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
                     elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
                     echo
                     if [[ $REPLY =~ ^[Yy]$ ]]; then
                         overcfg=1
                     fi
-                elif [ $(grep version ~/.welcome/welcome.sh | sed 's/.*=//' | sed 's/[.][.]*//g') -lt 100 ]; then
+                elif [ $oldver -lt 100 ]; then
                     overcfg=1
                 else
                     overcfg=0
@@ -123,7 +124,7 @@ then
             rm ~/.welcome/welcome.sh
             rm ~/.welcome/config.cfg
             rm ~/.welcome/config_old.cfg 2> /dev/null
-            rmdir ~/.welcome
+            rm -r ~/.welcome
 
             #remove all lines that match the string
             lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
