@@ -12,6 +12,13 @@ My goal with this script is to keep it simple, just a single line that gives use
 - Clean and simple
 - Customizable
 - Easy to install and update
+
+#### Requirements:
+- Terminal with 24-bit true color support
+  - Can check with `printf "\x1b[38;2;255;100;0mTRUECOLOR\x1b[0m\n"`, will return `TRUECOLOR` in Brown if supported<br>
+  <sup>Source: [https://github.com/termstandard/colors](https://github.com/termstandard/colors)</sup>
+  - [List of supported terminal emulators](https://github.com/termstandard/colors#truecolor-support-in-output-devices)
+- A modern version of Bash or Zsh (eg. the `/bin/sh` shell in Ubuntu does **not** work)
 <hr>
 
 ### Installing:
