@@ -47,7 +47,8 @@ then
         echo -e "\e[35mwelcome.sh\e[0m already installed!"
         oldver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') && if ! [ -n "$oldver" ]; then oldver=0; fi
         if [[ $vernum -gt $oldver ]]; then
-            cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v$version/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g') # Check the new config version
+            if which curl >/dev/null ; then cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v$version/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g');
+            elif which wget >/dev/null ; then cfgver=$(echo $(wget -q https://github.com/G2-Games/welcome.sh/releases/download/v1.0.2/config.cfg -O -) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g'); fi
             echo -en "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (\e[36mv$(ver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//') && if ! [ -n "$ver" ]; then echo -e "\bUnknown"; else echo "$ver"; fi)\e[0m => \e[32mv$version\e[0m) \n\e[36mY/n\e[0m"
             if [[ "$environment" = "bash" ]]; then read -p " " -n 1 -r;
             elif [[ "$environment" = "zsh" ]]; then read -q "REPLY? " -n 1 -r; fi
