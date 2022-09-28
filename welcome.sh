@@ -198,14 +198,6 @@ MORN='\e[38;2;255;164;74m'
 AFTN='\e[38;2;250;245;110m'
 EVEN='\e[38;2;171;54;3m'
 
-#==================SETUP=================#
-# Select which parts you want active by  #
-# commenting them out. For example, on a #
-# desktop, disabling the battery message #
-# is a good idea. You can also re-order  #
-# them to change how they display!       #
-#========================================#
-
 greetings=("Welcome" "Greetings" "Hello" "Hi") # Add your own greetings!
 randgreeting="off"  #< Turn the random greetings on (eg. "Hello <user>, Hi <user>")
 twelvehour="on"     #< Switch between 12 and 24 hour time (eg. 8:00 PM vs 20:00)
@@ -214,6 +206,7 @@ updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
+export LC_NUMERIC="en_US.UTF-8" #Fix for locales that use , instead of . as a delimiter
 source ~/.welcome/config.cfg
 
 welcome
