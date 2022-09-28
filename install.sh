@@ -1,4 +1,4 @@
-version="${1:-1.0.2}"
+version="${1:-1.0.3}"
 vernum=$(echo $version | sed 's/[.][.]*//g' )
 bashrc=~/.bashrc
 zshrc=~/.zshrc
