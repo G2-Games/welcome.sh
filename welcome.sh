@@ -142,11 +142,19 @@ updates () {
     if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
       flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
     fi
+    # Add all update counts together
+    updates=$(($debian + $arch + $fedora + $flatpak + $brew))
+    echo $updates >| updates
     pkill -P $pid sleep
+    sleep 5
+    if [ -a updates ]; then
+      rm updates
+    fi
+    return 1
   }
 
   pid=$(echo $$)
-  updchk &
+  updchk & #Check for updates Asynchronously
 
   exec 3>&2
   exec 2> /dev/null
@@ -155,8 +163,10 @@ updates () {
   exec 2>&3
   exec 3>&-
 
-  # Add all update counts together
-  updates=$(($debian + $arch + $fedora + $flatpak + $brew))
+  if [ -a updates ]; then
+    updates=$(cat updates)
+    rm updates
+  fi
 
   # Check the update amounts and print them out
   if [ $chk -lt 1 ]; then
@@ -224,7 +234,7 @@ updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
-source ~/.welcome/config.cfg
+source config.cfg
 
 welcome
 greeting
