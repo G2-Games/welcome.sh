@@ -1,5 +1,5 @@
 version=1.0.3
-
+export LC_NUMERIC="en_US.UTF-8" #Fix for locales that use , instead of . as a decimal delimiter
 #========Welcome=======#
 welcome () {
   msg="Welcome" # Default
@@ -206,7 +206,6 @@ updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
-export LC_NUMERIC="en_US.UTF-8" #Fix for locales that use , instead of . as a decimal delimiter
 source ~/.welcome/config.cfg
 
 welcome
