@@ -144,11 +144,11 @@ updates () {
     fi
     # Add all update counts together
     updates=$(($debian + $arch + $fedora + $flatpak + $brew))
-    echo $updates >| updates
+    echo $updates >| ~/.welcome/updates
     pkill -P $pid sleep
     sleep 5
-    if [ -a updates ]; then
-      rm updates
+    if [ -a ~/.welcome/updates ]; then
+      rm ~/.welcome/updates
     fi
     return 1
   }
@@ -165,7 +165,7 @@ updates () {
 
   if [ -a updates ]; then
     updates=$(cat updates)
-    rm updates
+    rm ~/.welcome/updates
   fi
 
   # Check the update amounts and print them out
@@ -234,7 +234,7 @@ updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
-source config.cfg
+source ~/.welcome/config.cfg
 
 welcome
 greeting
