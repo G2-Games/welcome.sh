@@ -106,6 +106,7 @@ updates () {
   brew=0
   flatpak=0
   chk=0
+  updates=0
 
   # Check for updates from different places... wonder if there's a better way
 
@@ -164,7 +165,7 @@ updates () {
   exec 3>&-
 
   if [ -a updates ]; then
-    updates=$(cat updates)
+    updates=$(cat ~/.welcome/updates)
     rm ~/.welcome/updates
   fi
 
