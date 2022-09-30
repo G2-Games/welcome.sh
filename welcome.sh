@@ -105,52 +105,70 @@ updates () {
   fedora=0
   brew=0
   flatpak=0
+  chk=0
 
   # Check for updates from different places... wonder if there's a better way
 
-  # Check for APT
-  if command -v apt-get &> /dev/null; then
-    debian=$(apt-get -s dist-upgrade -V 2> /dev/null | grep '=>' | awk '{print$1}' | wc -l)
-  fi
+  updchk () {
+    # Check for APT
+    if command -v apt-get &> /dev/null; then
+      debian=$(apt-get -s dist-upgrade -V 2> /dev/null | grep '=>' | awk '{print$1}' | wc -l)
+    fi
 
-  # Check for different Arch things
-  if command -v yay &> /dev/null; then
-    arch=$(yay -Qu 2> /dev/null | wc -l)
-  elif command -v paru &> /dev/null; then
-    arch=$(paru -Quq 2> /dev/null | wc -l)
-  elif command -v pacman &> /dev/null; then
-    arch=$(pacman -Qu 2> /dev/null | wc -l)
-  fi
+    # Check for different Arch things
+    if command -v yay &> /dev/null; then
+      arch=$(yay -Qu 2> /dev/null | wc -l)
+    elif command -v paru &> /dev/null; then
+      arch=$(paru -Quq 2> /dev/null | wc -l)
+    elif command -v pacman &> /dev/null; then
+      arch=$(pacman -Qu 2> /dev/null | wc -l)
+    fi
 
-  # Check for Fedora things
-  if command -v dnf &> /dev/null; then
-    fedora=$(dnf list updates 2> /dev/null | wc -l)
-    fedora=$((fedora-1))
-  elif command -v yum &> /dev/null; then
-    fedora=$(yum list updates 2> /dev/null | wc -l)
-    fedora=$((fedora-1))
-  fi
+    # Check for Fedora things
+    if command -v dnf &> /dev/null; then
+      fedora=$(dnf list updates 2> /dev/null | wc -l)
+      fedora=$((fedora-1))
+    elif command -v yum &> /dev/null; then
+      fedora=$(yum list updates 2> /dev/null | wc -l)
+      fedora=$((fedora-1))
+    fi
 
-  # Check for Brew  updates
-  if command -v brew &> /dev/null; then
-    brew=$(brew outdated 2> /dev/null | wc -l)
-  fi
+    # Check for Brew  updates
+    if command -v brew &> /dev/null; then
+      brew=$(brew outdated 2> /dev/null | wc -l)
+    fi
 
-  # Check for Flatpak
-  if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
-    flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
-  fi
+    # Check for Flatpak
+    if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
+      flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
+    fi
+    pkill -P $pid sleep
+  }
+
+  pid=$(echo $$)
+  updchk &
+
+  exec 3>&2
+  exec 2> /dev/null
+  sleep 5
+  chk=$(echo $?) &> /dev/null
+  exec 2>&3
+  exec 3>&-
 
   # Add all update counts together
   updates=$(($debian + $arch + $fedora + $flatpak + $brew))
 
   # Check the update amounts and print them out
-  if [ $updates -eq 1 ]; then
-    echo -en "You have ${NORM}1${NCOL} pending update. "
-  elif [ $updates -eq 0 ]; then
-    echo -en "You have no pending updates. "
+  if [ $chk -lt 1 ]; then
+    echo -en "Update check timed out. "
   else
-    echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
+    if [ $updates -eq 1 ]; then
+      echo -en "You have ${NORM}1${NCOL} pending update. "
+    elif [ $updates -eq 0 ]; then
+      echo -en "You have no pending updates. "
+    else
+      echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
+    fi
   fi
 }
 
