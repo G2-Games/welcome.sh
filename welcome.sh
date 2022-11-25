@@ -22,6 +22,7 @@ welcome () {
 
 #=========Time=========#
 clock () {
+  bksp=""
   # Set the current hour and minute
   if [ "$twelvehour" = "on" ]; then
     if [ $(date +%_I) -lt 10 ]; then
@@ -32,7 +33,7 @@ clock () {
     ampm=$(date +%p)
   else
     hour=$(date +%H)
-    bksp="\b \b"
+    bksp="\b \b" # This is a hack to fix some spacing issues with AM and PM with different lengths of time
   fi
   minute=$(date +%M)
 
@@ -50,6 +51,7 @@ greeting () {
     greet="Good"
   fi
 
+  # Change color and greeting depending on the segment of day
   if [ $hour -le 11 ] && [ $hour -gt 6 ]; then
     echo -en "$greet ${MORN}morning${NCOL}. "
   elif [ $hour -eq 12 ]; then
@@ -69,6 +71,7 @@ battery () {
   # Set a default to prevent errors
   batlvl=0
 
+  # Check the two usually used battery locations
   if [[ -a "/sys/class/power_supply/BAT0/capacity" ]]; then
     batlvl=$(cat /sys/class/power_supply/BAT0/capacity)
   elif [[ -a "/sys/class/power_supply/BAT1/capacity" ]]; then
@@ -109,11 +112,10 @@ updates () {
   updates=0
 
   # Check for updates from different places... wonder if there's a better way
-
   updchk () {
     # Check for APT
     if command -v apt-get &> /dev/null; then
-      debian=$(apt-get -s dist-upgrade -V 2> /dev/null | grep '=>' | awk '{print$1}' | wc -l)
+      debian=$(apt-get -s dist-upgrade -V | grep '=>' || [[ $? == 1 ]] | wc -l)
     fi
 
     # Check for different Arch things
@@ -134,7 +136,7 @@ updates () {
       fedora=$((fedora-1))
     fi
 
-    # Check for Brew  updates
+    # Check for Brew updates
     if command -v brew &> /dev/null; then
       brew=$(brew outdated 2> /dev/null | wc -l)
     fi
@@ -151,7 +153,6 @@ updates () {
     if [[ -a ~/.welcome/updates ]]; then
       rm ~/.welcome/updates
     fi
-    return 0
   }
 
   pid=$(echo $$)
@@ -173,10 +174,10 @@ updates () {
   if [ $chk -lt 1 ]; then
     echo -en "Update check timed out. "
   else
-    if [ $updates -eq 1 ]; then
-      echo -en "You have ${NORM}1${NCOL} pending update. "
-    elif [ $updates -eq 0 ]; then
+    if [ $updates -eq 0 ]; then
       echo -en "You have no pending updates. "
+    elif [ $updates -eq 1 ]; then
+      echo -en "You have ${NORM}1${NCOL} pending update. "
     else
       echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
     fi
@@ -190,8 +191,7 @@ randcolor() {
 # to modify it for a light one                                        #
   cluma=0
   loops=0
-  while [ $(printf %.0f $cluma) -le 100 ] && [ $loops -le 10 ];
-  do
+  while [ $(printf %.0f $cluma) -le 100 ] && [ $loops -le 10 ]; do
     cr=$((0 + $RANDOM % 255))
     crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
     cg=$((0 + $RANDOM % 255))
@@ -234,6 +234,8 @@ rechargenotif="off" #< Notify that you should recharge if below 15%
 updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
+
+# ALL the stuff above this line and below the colors line is in the config, changing it here will do nothing if the config doesn't exist!
 
 source ~/.welcome/config.cfg
 
