@@ -1,5 +1,5 @@
 version=1.0.5
-export LC_NUMERIC="en_US.UTF-8" #Fix for locales that use , instead of . as a decimal delimiter
+export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead of . as a decimal delimiter
 #========Welcome=======#
 welcome () {
   msg="Welcome" # Default
@@ -151,7 +151,7 @@ updates () {
     if [[ -a ~/.welcome/updates ]]; then
       rm ~/.welcome/updates
     fi
-    return 1
+    return 0
   }
 
   pid=$(echo $$)
