@@ -119,7 +119,9 @@ updates () {
     fi
 
     # Check for different Arch things
-    if command -v yay &> /dev/null; then
+    if command -v checkupdates &> /dev/null; then
+      arch=$(checkupdates | wc -l)
+    elif command -v yay &> /dev/null; then
       arch=$(yay -Qu 2> /dev/null | wc -l)
     elif command -v paru &> /dev/null; then
       arch=$(paru -Quq 2> /dev/null | wc -l)
