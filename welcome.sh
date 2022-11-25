@@ -148,7 +148,7 @@ updates () {
     echo $updates >| ~/.welcome/updates
     pkill -P $pid sleep
     sleep 5
-    if [ -a ~/.welcome/updates ]; then
+    if [[ -a ~/.welcome/updates ]]; then
       rm ~/.welcome/updates
     fi
     return 1
@@ -160,11 +160,11 @@ updates () {
   exec 3>&2
   exec 2> /dev/null
   sleep 5
-  chk=$(echo $?) &> /dev/null
+  chk=$(echo $?)
   exec 2>&3
   exec 3>&-
 
-  if [ -a updates ]; then
+  if [[ -a updates ]]; then
     updates=$(cat ~/.welcome/updates)
     rm ~/.welcome/updates
   fi
