@@ -164,7 +164,7 @@ updates () {
   exec 2>&3
   exec 3>&-
 
-  if [[ -a updates ]]; then
+  if [[ -a ~/.welcome/updates ]]; then
     updates=$(cat ~/.welcome/updates)
     rm ~/.welcome/updates
   fi
