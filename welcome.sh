@@ -1,4 +1,4 @@
-version=1.0.4
+version=1.0.5
 export LC_NUMERIC="en_US.UTF-8" #Fix for locales that use , instead of . as a decimal delimiter
 #========Welcome=======#
 welcome () {
