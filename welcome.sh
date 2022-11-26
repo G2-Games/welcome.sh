@@ -1,3 +1,7 @@
+# Bash "strict mode" => http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
 version=1.0.5
 export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead of . as a decimal delimiter
 #========Welcome=======#
@@ -120,7 +124,7 @@ updates () {
 
     # Check for different Arch things
     if command -v checkupdates &> /dev/null; then
-      arch=$(checkupdates | wc -l)
+      arch=$(checkupdates 2> /dev/null | wc -l)
     elif command -v yay &> /dev/null; then
       arch=$(yay -Qu 2> /dev/null | wc -l)
     elif command -v paru &> /dev/null; then
@@ -150,22 +154,24 @@ updates () {
     # Add all update counts together
     updates=$(($debian + $arch + $fedora + $flatpak + $brew))
     echo $updates >| ~/.welcome/updates
-    pkill -P $pid sleep
+    pkill -P $pid sleep # When update checking is finished, kill the sleep function running under this bash process
     sleep 5
     if [[ -a ~/.welcome/updates ]]; then
       rm ~/.welcome/updates
     fi
   }
 
-  pid=$(echo $$)
-  updchk & #Check for updates Asynchronously
+  pid=$(echo $$) # Grab the PID of the process
+  updchk &       # Check for updates Asynchronously
 
-  exec 3>&2
+  set +e         # Allow nonzero exit status for killing sleep
+  exec 3>&2      # These exec commands simply supress the output of the "kill" command
   exec 2> /dev/null
   sleep 5
   chk=$(echo $?)
-  exec 2>&3
+  exec 2>&3      # And then re-enable it
   exec 3>&-
+  set -e         # Return to disallowing nonzero exit status
 
   if [[ -a ~/.welcome/updates ]]; then
     updates=$(cat ~/.welcome/updates)
