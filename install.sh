@@ -1,8 +1,19 @@
 tput sc
-echo "Checking for latest release..."
+if ! [[ $1 == "auto" ]] && [ -z "$1" ]; then
+    echo "Checking for latest release..."
+fi
+
 latestver=$(curl -Ls https://github.com/G2-Games/welcome.sh/releases/latest/download/welcome.sh | grep version | sed 's/.*=//')
+oldver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') && if ! [ -n "$oldver" ]; then oldver=0; fi
 
 version="${1:-$latestver}"
+
+if [[ $1 == "auto" ]] && [[ $(echo $latestver | sed 's/[.][.]*//g') -le $oldver ]]; then
+    exit 0
+elif [[ $1 == "auto" ]]; then
+    version=$latestver
+fi
+
 vernum=$(echo $version | sed 's/[.][.]*//g' )
 bashrc=~/.bashrc
 zshrc=~/.zshrc
@@ -58,8 +69,11 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
         tput rc
         tput sc
         mkdir -p ~/.welcome
-        echo -e "\e[35mwelcome.sh\e[0m already installed!"
-        oldver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') && if ! [ -n "$oldver" ]; then oldver=0; fi
+        if ! [[ $1 == "auto" ]]; then
+            echo -e "\e[35mwelcome.sh\e[0m already installed!"
+        else
+            echo -e "\e[32mUpdate available for \e[35mwelcome.sh!\e[0m"
+        fi
         if [[ $vernum -gt $oldver ]]; then
             if which curl >/dev/null ; then
                 cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
@@ -72,7 +86,7 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
             if [[ $REPLY =~ ^[Yy]$ ]]; then
                 if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') ]] && ! [ -z ~/.welcome/config.cfg ]; then
 
-                    univread "Newer config version available. Do you want to \e[31moverwrite\e[0m your config? \nA backup will be created in the \e[36m.welcome\e[0m folder.\n\e[36mY/n\e[0m"
+                    univread "Newer \e[36mconfig\e[0m version available. Do you want to \e[31moverwrite\e[0m your \e[36mconfig\e[0m? \nA backup will be created in the \e[36m.welcome\e[0m folder.\n\e[36mY/n\e[0m"
 
                     if [[ $REPLY =~ ^[Yy]$ ]]; then
                         overcfg=1
@@ -128,7 +142,11 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
                 exit 0
             else
                 tput rc && tput el && tput ed
-                echo -e "\e[35mwelcome.sh\e[0m already installed!"
+                if ! [[ $1 == "auto" ]]; then
+                    echo -e "\e[35mwelcome.sh\e[0m already installed!"
+                else
+                    exit 0
+                fi
             fi
         fi
 

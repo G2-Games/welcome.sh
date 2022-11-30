@@ -243,7 +243,7 @@ updatecheck="on"    #< Check for general updates
 flatpakupd="off"    #< Check for flatpak updates, this slows startup down A LOT
 goodgreeting="on"   #< Display greetings like "Good afternoon," else "It's afternoon"
 
-# ALL the stuff above this line and below the colors line is in the config, changing it here will do nothing if the config doesn't exist!
+# ALL the stuff above this line and below the colors line is in the config, changing it here will do nothing only if the config doesn't exist!
 
 source ~/.welcome/config.cfg
 
@@ -251,5 +251,23 @@ welcome
 greeting
 clock
 battery
-if [ "$updatecheck" = "on" ]; then updates; fi
+if [ "$updatecheck" = "on" ];then updates; fi
 echo # Properly line break at the end
+
+set +e
+
+date=$(date +%s)
+lastdate=$(cat ~/.welcome/udm 2>/dev/null)
+
+if [[ $((date - lastdate)) -ge 86400 ]]; then
+  environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
+  if [[ "$environment" = "bash" ]]; then
+    bash install.sh auto
+  elif [[ "$environment" = "zsh" ]]; then
+    zsh install.sh auto
+  fi
+  echo $(date +%s) >| ~/.welcome/udm 2>/dev/null
+elif ! [[ -f ~/.welcome/udm ]]; then
+  touch ~/.welcome/udm
+  echo $(date +%s) >| ~/.welcome/udm 2>/dev/null
+fi
