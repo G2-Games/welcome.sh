@@ -119,7 +119,7 @@ updates () {
   updchk () {
     # Check for APT
     if command -v apt-get &> /dev/null; then
-      debian=$(apt-get -s dist-upgrade -V | grep '=>' || [[ $? == 1 ]] | wc -l)
+      debian=$(apt-get -s dist-upgrade -V | grep -c '=>')
     fi
 
     # Check for different Arch things
