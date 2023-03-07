@@ -1,27 +1,23 @@
-tput sc
-if ! [[ $1 == "auto" ]] && [ -z "$1" ]; then
-    echo "Checking for latest release..."
-fi
+# shellcheck disable=SC2016
+printReturn () {
+    tput rc
+    echo "$1"
+    tput sc
+}
 
-latestver=$(curl -Ls https://github.com/G2-Games/welcome.sh/releases/latest/download/welcome.sh | grep version | sed 's/.*=//')
-oldver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') && if ! [ -n "$oldver" ]; then oldver=0; fi
+getVersion () {
+    ver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//')
 
-version="${1:-$latestver}"
+    if [ -z "$ver" ]; then
+        echo -e "\bUnknown"
+        return
+    fi
 
-if [[ $1 == "auto" ]] && [[ $(echo $latestver | sed 's/[.][.]*//g') -le $oldver ]]; then
-    exit 0
-elif [[ $1 == "auto" ]]; then
-    version=$latestver
-fi
+    echo "$ver"
+}
 
-vernum=$(echo $version | sed 's/[.][.]*//g' )
-bashrc=~/.bashrc
-zshrc=~/.zshrc
-originaldir=$PWD
-environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
-
-univread() { # Universal read command for bash and zsh
-    echo -en $1
+univRead () { # Universal read command for bash and zsh
+    echo -en "$1"
     if [[ "$environment" = "bash" ]]; then
         read -p " " -n 1 -r;
     elif [[ "$environment" = "zsh" ]]; then
@@ -30,39 +26,64 @@ univread() { # Universal read command for bash and zsh
     echo
 }
 
+tput sc
+if ! [[ $1 == "auto" ]] && [[ -z "$1" ]]; then
+    echo "Checking for latest release..."
+fi
+
+latestver=$(curl -Ls https://github.com/G2-Games/welcome.sh/releases/latest/download/welcome.sh | grep version | sed 's/.*=//')
+oldver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') && if [[ -z "$oldver" ]]; then oldver=0; fi
+
+version="${1:-$latestver}"
+
+if [[ $1 == "auto" ]] && [[ ${latestver/[.][.]*/} -le $oldver ]]; then
+    exit 0
+elif [[ $1 == "auto" ]]; then
+    version=$latestver
+fi
+
+vernum=${version/[.][.]*/}
+bashrc=~/.bashrc
+zshrc=~/.zshrc
+originaldir=$PWD
+environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
+
 if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
-    if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc || [ -z ~/.welcome/welcome.sh ];
-    then
-        tput rc
-        echo "Welcome! Installing v$version in $environment..."
-        tput sc
-        cd ~/
+    if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc &&\
+    ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc &&\
+    ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc &&\
+    ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc; then
+
+        printReturn "Welcome! Installing v$version in $environment..."
+
+        cd ~/ || return
         mkdir -p ~/.welcome
         if which curl >/dev/null ; then
-            curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
+            curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --output ~/.welcome/welcome.sh
             if [[ $vernum -ge 100 ]]; then
-                curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
+                curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg --output ~/.welcome/config.cfg
             fi
         elif which wget >/dev/null ; then
-            wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
+            wget https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --P ~/.welcome/
             if [[ $vernum -ge 100 ]]; then
-                wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
+                wget https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg --P ~/.welcome/
             fi
         else
             echo -e "\e[31mCannot download, neither Wget nor cURL is available!\e[0m"
             exit 1
         fi
         chmod +x ~/.welcome/welcome.sh
-        if [[ "$environment" = "bash" ]];
-        then
+
+
+        if [[ "$environment" = "bash" ]]; then
             echo "Installing to bashrc"
             echo 'bash ~/.welcome/welcome.sh' >> $bashrc
-        elif [[ "$environment" = "zsh" ]];
-        then
+        elif [[ "$environment" = "zsh" ]]; then
             echo "Installing to zshrc"
             echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
         fi
-        cd "$originaldir"
+
+        cd "$originaldir" || return
         tput rc && tput el && tput ed
         echo -e "\e[36mInstalled! \e[0m"
     else
@@ -76,17 +97,17 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
         fi
         if [[ $vernum -gt $oldver ]]; then
             if which curl >/dev/null ; then
-                cfgver=$(echo $(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
+                cfgver=$(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
             elif which wget >/dev/null; then
-                cfgver=$(echo $(wget -q https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg -O -) | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
+                cfgver=$(wget -q https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg -O - | grep version | sed 's/.*=//' | sed 's/[.][.]*//g')
             fi
 
-            univread "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (\e[36mv$(ver=$(grep version ~/.welcome/welcome.sh 2> /dev/null | sed 's/.*=//') && if ! [ -n "$ver" ]; then echo -e "\bUnknown"; else echo "$ver"; fi)\e[0m => \e[32mv$version\e[0m) \n\e[36mY/n\e[0m"
+            univRead "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (\e[36mv$(getVersion)\e[0m => \e[32mv$version\e[0m) \n\e[36mY/n\e[0m"
 
             if [[ $REPLY =~ ^[Yy]$ ]]; then
-                if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') ]] && ! [ -z ~/.welcome/config.cfg ]; then
+                if [[ $cfgver -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | sed 's/.*=//' | sed 's/[.][.]*//g') ]] && [ -n ~/.welcome/config.cfg ]; then
 
-                    univread "Newer \e[36mconfig\e[0m version available. Do you want to \e[31moverwrite\e[0m your \e[36mconfig\e[0m? \nA backup will be created in the \e[36m.welcome\e[0m folder.\n\e[36mY/n\e[0m"
+                    UnivRead "Newer \e[36mconfig\e[0m version available. Do you want to \e[31moverwrite\e[0m your \e[36mconfig\e[0m? \nA backup will be created in the \e[36m.welcome\e[0m folder.\n\e[36mY/n\e[0m"
 
                     if [[ $REPLY =~ ^[Yy]$ ]]; then
                         overcfg=1
@@ -103,19 +124,19 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
                 rm ~/.welcome/welcome.sh
                 if which curl >/dev/null ;
                 then
-                    curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --output ~/.welcome/welcome.sh
+                    curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --output ~/.welcome/welcome.sh
                     if [[ $vernum -ge 100 ]] && [[ $overcfg -gt 0 ]]; then
                         echo "Backing up: config.cfg >> config_old.cfg"
                         mv ~/.welcome/config.cfg ~/.welcome/config_old.cfg
-                        curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --output ~/.welcome/config.cfg
+                        curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg --output ~/.welcome/config.cfg
                     fi
                 elif which wget >/dev/null ;
                 then
-                    wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/welcome.sh --P ~/.welcome/
+                    wget https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --P ~/.welcome/
                     if [[ $vernum -ge 100 ]] && [[ $overcfg -gt 0 ]]; then
                         echo "Backing up: config.cfg >> config_old.cfg"
                         mv ~/.welcome/config.cfg ~/.welcome/config_old.cfg
-                        wget https://github.com/G2-Games/welcome.sh/releases/download/v${version}/config.cfg --P ~/.welcome/
+                        wget https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg --P ~/.welcome/
                     fi
                 else
                     echo -e "\e[31mCannot update, neither Wget nor cURL is available!\e[0m"
@@ -124,15 +145,15 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
 
                 # Check for older versions and replace bashrc lines
                 lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
-                lines=$(printf '%s\n' $lines | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
-                for i in $( echo "$lines" ); do
+                lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
+                for i in $lines; do
                     sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
                 done
                 echo 'bash ~/.welcome/welcome.sh' >> $bashrc
 
                 lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
-                lines=$(printf '%s\n' $lines | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
-                for i in $( echo "$lines" ); do
+                lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
+                for i in $lines; do
                     sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
                 done
                 echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
@@ -150,7 +171,7 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
             fi
         fi
 
-        univread "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
+        univRead "Do you want to \e[31muninstall \e[35mwelcome.sh\e[0m?\n\e[36mY/n\e[0m"
 
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             tput rc && tput el && tput ed
@@ -163,14 +184,14 @@ if [ "$environment" = "bash" ] || [ "$environment" = "zsh" ]; then
 
             #remove all lines that match the string
             lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
-            lines=$(printf '%s\n' $lines | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
-            for i in $( echo "$lines" ); do
+            lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
+            for i in $lines; do
                 sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
             done
 
             lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
-            lines=$(printf '%s\n' $lines | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
-            for i in $( echo "$lines" ); do
+            lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
+            for i in $lines; do
                 sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
             done
 
