@@ -1,12 +1,19 @@
+# shellcheck source=/home/g2/Documents/projects/code/misc/welcome.sh/welcome.sh
 # Bash "strict mode" => http://redsymbol.net/articles/unofficial-bash-strict-mode/
 set -euo pipefail
 IFS=$'\n\t'
 
-version=1.0.5
 export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead of . as a decimal delimiter
+
+# Define "global" variables
+environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
+version=1.0.5
+
 #========Welcome=======#
 welcome () {
   msg="Welcome" # Default
+  greetingsLength=${#greetings[@]}
+  greetingsNumber=$((RANDOM % greetingsLength))
 
   if command -v whoami &>/dev/null ; then
     usr=$(whoami)
@@ -17,7 +24,7 @@ welcome () {
   fi
 
   if [ "$randgreeting" = "on" ]; then
-    msg=${greetings[$(($RANDOM % $(echo ${#greetings[@]})))]}
+    msg=${greetings[$greetingsNumber]}
   fi
 
   # Print the welcome message
@@ -29,7 +36,7 @@ clock () {
   bksp=""
   # Set the current hour and minute
   if [ "$twelvehour" = "on" ]; then
-    if [ $(date +%_I) -lt 10 ]; then
+    if [[ "$(date +%_I)" -lt 10 ]]; then
       hour="\b$(date +%_I)"
     else
       hour="$(date +%_I)"
@@ -56,13 +63,13 @@ greeting () {
   fi
 
   # Change color and greeting depending on the segment of day
-  if [ $hour -le 11 ] && [ $hour -gt 6 ]; then
+  if [ "$hour" -le 11 ] && [ "$hour" -gt 6 ]; then
     echo -en "$greet ${MORN}morning${NCOL}. "
-  elif [ $hour -eq 12 ]; then
+  elif [ "$hour" -eq 12 ]; then
     echo -en "It's ${AFTN}noon${NCOL}. "
-  elif [ $hour -le 17 ] && [ $hour -gt 12 ]; then
+  elif [ "$hour" -le 17 ] && [ "$hour" -gt 12 ]; then
     echo -en "$greet ${AFTN}afternoon${NCOL}. "
-  elif [ $hour -le 19 ] && [ $hour -gt 17 ]; then
+  elif [ "$hour" -le 19 ] && [ "$hour" -gt 17 ]; then
     echo -en "$greet ${EVEN}evening${NCOL}. "
   else
     echo -en "It's ${NIGH}night${NCOL}. "
@@ -87,13 +94,13 @@ battery () {
   fi
 
   # Change color depending on level
-  if [ $batlvl -ge 100 ]; then
+  if [[ $batlvl -ge 100 ]]; then
     echo -en "The battery is ${FULL}fully charged${NCOL}. "
-  elif [ $batlvl -gt 0 ]; then
+  elif [[ $batlvl -gt 0 ]]; then
     echo -en "The battery level is "
-    if [ $batlvl -le 15 ]; then
+    if [[ $batlvl -le 15 ]]; then
       echo -en "${CRIT}$batlvl%${NCOL}. "
-      if [ "$rechargenotif" = "on" ]; then
+      if [[ "$rechargenotif" = "on" ]]; then
         echo -en "- ${NORM}You should probably recharge${NCOL}. "
       fi
     elif [ $batlvl -le 30 ]; then
@@ -151,27 +158,28 @@ updates () {
     if command -v flatpak &> /dev/null && [ "$flatpakupd" = "on" ]; then
       flatpak=$(flatpak remote-ls --updates 2> /dev/null | wc -l)
     fi
+
     # Add all update counts together
-    updates=$(($debian + $arch + $fedora + $flatpak + $brew))
+    updates=$((debian + arch + fedora + flatpak + brew))
     echo $updates >| ~/.welcome/updates
-    pkill -P $pid sleep # When update checking is finished, kill the sleep function running under this bash process
+    pkill -P "${pid}" sleep # When update checking is finished, kill the sleep function running under this bash process
     sleep 5
     if [[ -a ~/.welcome/updates ]]; then
       rm ~/.welcome/updates
     fi
   }
 
-  pid=$(echo $$) # Grab the PID of the process
-  updchk &       # Check for updates Asynchronously
+  pid=$$           # Grab the PID of the process
+  updchk &        # Check for updates Asynchronously
 
-  set +e         # Allow nonzero exit status for killing sleep
-  exec 3>&2      # These exec commands simply supress the output of the "kill" command
+  set +e          # Allow nonzero exit status for killing sleep
+  exec 3>&2       # These exec commands simply supress the output of the "kill" command
   exec 2> /dev/null
   sleep 5
-  chk=$(echo $?)
-  exec 2>&3      # And then re-enable it
+  chk=$?
+  exec 2>&3       # And then re-enable it
   exec 3>&-
-  set -e         # Return to disallowing nonzero exit status
+  set -e          # Return to disallowing nonzero exit status
 
   if [[ -a ~/.welcome/updates ]]; then
     updates=$(cat ~/.welcome/updates)
@@ -182,9 +190,9 @@ updates () {
   if [ $chk -lt 1 ]; then
     echo -en "Update check timed out. "
   else
-    if [ $updates -eq 0 ]; then
+    if [ "${updates}" -eq 0 ]; then
       echo -en "You have no pending updates. "
-    elif [ $updates -eq 1 ]; then
+    elif [ "${updates}" -eq 1 ]; then
       echo -en "You have ${NORM}1${NCOL} pending update. "
     else
       echo -en "You have ~${NORM}$updates${NCOL} pending updates. "
@@ -199,12 +207,12 @@ randcolor() {
 # to modify it for a light one                                        #
   cluma=0
   loops=0
-  while [ $(printf %.0f $cluma) -le 100 ] && [ $loops -le 10 ]; do
-    cr=$((0 + $RANDOM % 255))
+  while [ "$(printf %.0f $cluma)" -le 100 ] && [ $loops -le 10 ]; do
+    cr=$((0 + RANDOM % 255))
     crl=$(echo "$cr 0.299" | awk '{print $1 * $2}')
-    cg=$((0 + $RANDOM % 255))
+    cg=$((0 + RANDOM % 255))
     cgl=$(echo "$cg 0.587" | awk '{print $1 * $2}')
-    cb=$((0 + $RANDOM % 255))
+    cb=$((0 + RANDOM % 255))
     cbl=$(echo "$cb 0.114" | awk '{print $1 * $2}')
     cluma=$(echo "$crl $cgl $cbl" | awk '{print $1 + $2 + $3}')
     loops=$((loops+1))
@@ -251,7 +259,9 @@ welcome
 greeting
 clock
 battery
-if [ "$updatecheck" = "on" ];then updates; fi
+if [ "$updatecheck" = "on" ]; then
+  updates
+fi
 echo # Properly line break at the end
 
 set +e
@@ -260,14 +270,13 @@ date=$(date +%s)
 lastdate=$(cat ~/.welcome/udm 2>/dev/null)
 
 if [[ $((date - lastdate)) -ge 86400 ]]; then
-  environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
   if [[ "$environment" = "bash" ]]; then
     bash install.sh auto
   elif [[ "$environment" = "zsh" ]]; then
     zsh install.sh auto
   fi
-  echo $(date +%s) >| ~/.welcome/udm 2>/dev/null
+  date +%s >| ~/.welcome/udm 2>/dev/null
 elif ! [[ -f ~/.welcome/udm ]]; then
   touch ~/.welcome/udm
-  echo $(date +%s) >| ~/.welcome/udm 2>/dev/null
+  date +%s >| ~/.welcome/udm 2>/dev/null
 fi

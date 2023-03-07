@@ -192,6 +192,8 @@ else
         exit 0
     fi
 
-    uninstall
-    exit 0
+    if ! [[ $1 == "auto" ]]; then
+        uninstall
+        exit 0
+    fi
 fi
