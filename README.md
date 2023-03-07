@@ -31,15 +31,6 @@ bash -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/in
 ```
 zsh -c "$(curl -s https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh)"
 ```
-#### Or wget
-<sub>Bash:</sub>
-```
-bash -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
-```
-<sub>Zsh:</sub>
-```
-zsh -c "$(wget -q https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh -O -)"
-```
 
 It installs to `~/.welcome/welcome.sh`, and adds a line to the bottom of `~/.bashrc` or `~/.zshrc`
 
