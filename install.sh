@@ -35,6 +35,7 @@ uninstall () {
     echo "Goodbye. Uninstalling..."
     tput sc
     rm ~/.welcome/welcome.sh 2> /dev/null
+    rm ~/.welcome/install.sh 2> /dev/null
     rm ~/.welcome/config.cfg 2> /dev/null
     rm ~/.welcome/config_old.cfg 2> /dev/null
     rm -r ~/.welcome
@@ -62,8 +63,10 @@ update () {
     tput sc
     mkdir -p ~/.welcome
     rm ~/.welcome/welcome.sh
+    rm ~/.welcome/install.sh
 
     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --output ~/.welcome/welcome.sh
+    curl -SL https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh --output ~/.welcome/install.sh
     if [[ $vernum -ge 100 ]] && [[ $overcfg -gt 0 ]]; then
         echo "Backing up: config.cfg >> config_old.cfg"
         mv ~/.welcome/config.cfg ~/.welcome/config_old.cfg
@@ -135,6 +138,8 @@ if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome
     cd ~/ || exit 1
     mkdir -p ~/.welcome
     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --output ~/.welcome/welcome.sh
+    curl -SL https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh --output ~/.welcome/install.sh
+
     if [[ $vernum -ge 100 ]]; then
         curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg --output ~/.welcome/config.cfg
     fi
