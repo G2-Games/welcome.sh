@@ -1,4 +1,3 @@
-# shellcheck source=/home/g2/Documents/projects/code/misc/welcome.sh/welcome.sh
 # Bash "strict mode" => http://redsymbol.net/articles/unofficial-bash-strict-mode/
 set -euo pipefail
 IFS=$'\n\t'
@@ -7,7 +6,7 @@ export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead
 
 # Define "global" variables
 environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
-version=1.0.5
+version=1.1.0
 
 #========Welcome=======#
 welcome () {
