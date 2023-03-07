@@ -2,7 +2,7 @@ export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead
 
 # Define "global" variables
 environment=$(ps -o args= -p $$ | grep -Em 1 -o '\w{0,5}sh' | head -1)
-version=1.1.1
+version=1.1.2
 
 #========Welcome=======#
 welcome () {
