@@ -19,7 +19,7 @@ welcome () {
   fi
 
   if [ "$randgreeting" = "on" ]; then
-    msg=${greetings[$greetingsNumber]}
+    msg=${greetings[@]:$greetingsNumber:1}
   fi
 
   # Print the welcome message
