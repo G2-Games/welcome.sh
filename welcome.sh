@@ -1,7 +1,3 @@
-# Bash "strict mode" => http://redsymbol.net/articles/unofficial-bash-strict-mode/
-set -euo pipefail
-IFS=$'\n\t'
-
 export LC_NUMERIC="en_US.UTF-8" &> /dev/null #Fix for locales that use , instead of . as a decimal delimiter
 
 # Define "global" variables
@@ -270,9 +266,9 @@ lastdate=$(cat ~/.welcome/udm 2>/dev/null)
 
 if [[ $((date - lastdate)) -ge 86400 ]]; then
   if [[ "$environment" = "bash" ]]; then
-    bash install.sh auto
+    bash ~/.welcome/install.sh auto
   elif [[ "$environment" = "zsh" ]]; then
-    zsh install.sh auto
+    zsh ~/.welcome/install.sh auto
   fi
   date +%s >| ~/.welcome/udm 2>/dev/null
 elif ! [[ -f ~/.welcome/udm ]]; then
