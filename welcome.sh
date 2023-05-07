@@ -119,12 +119,12 @@ updates () {
 
   # Check for updates from different places... wonder if there's a better way
   updchk () {
-    # Check for APT
+    # Check for APT (Debian based)
     if command -v apt-get &> /dev/null; then
       debian=$(apt-get -s dist-upgrade -V | grep -c '=>')
     fi
 
-    # Check for different Arch things
+    # Check for Arch things
     if command -v checkupdates &> /dev/null; then
       arch=$(checkupdates 2> /dev/null | wc -l)
     elif command -v yay &> /dev/null; then
@@ -144,6 +144,12 @@ updates () {
       fedora=$((fedora-1))
     fi
 
+    # Check for OpenSUSE things
+    if command -v zypper &> /dev/null; then
+      suse=$(zypper list-updates 2> /dev/null | wc -l)
+      suse=$((suse-4))
+    fi
+
     # Check for Brew updates
     if command -v brew &> /dev/null; then
       brew=$(brew outdated 2> /dev/null | wc -l)
@@ -155,7 +161,7 @@ updates () {
     fi
 
     # Add all update counts together
-    updates=$((debian + arch + fedora + flatpak + brew))
+    updates=$((debian + arch + fedora + suse + flatpak + brew))
     echo $updates >| ~/.welcome/updates
     pkill -P "${pid}" sleep # When update checking is finished, kill the sleep function running under this bash process
     sleep 5
@@ -164,7 +170,7 @@ updates () {
     fi
   }
 
-  pid=$$           # Grab the PID of the process
+  pid=$$          # Grab the PID of the process
   updchk &        # Check for updates Asynchronously
 
   set +e          # Allow nonzero exit status for killing sleep
