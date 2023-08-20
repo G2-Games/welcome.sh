@@ -58,15 +58,12 @@ uninstall () {
 }
 
 update () {
-    # To monitor number of downloads/updates
-    curl https://g2games.dev/Assets/counter/counter.php
-
     tput rc el ed
     echo "Updating..."
     tput sc
     mkdir -p ~/.welcome
-    rm ~/.welcome/welcome.sh
-    rm ~/.welcome/install.sh
+    rm ~/.welcome/welcome.sh 2> /dev/null
+    rm ~/.welcome/install.sh 2> /dev/null
 
     curl -SL https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/welcome.sh --output ~/.welcome/welcome.sh
     curl -SL https://raw.githubusercontent.com/G2-Games/welcome.sh/main/install.sh --output ~/.welcome/install.sh
@@ -77,19 +74,19 @@ update () {
     fi
 
     # Check for older versions and replace bashrc lines
-    lines=$(grep -sn 'bash ~/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' $bashrc | sed -e 's/:.*//g')
-    lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
+    lines=$(grep -sn 'bash ~/.welcome/welcome.sh' "$bashrc" | sed -e 's/:.*//g' && grep -sn 'bash /home/$USER/.welcome/welcome.sh' "$bashrc" | sed -e 's/:.*//g') # Find target line number
+    lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g') # Format the line number properly (macos doesn't have Cut)
     for i in $lines; do
-        sed "${i}d" $bashrc > file.tmp && mv file.tmp $bashrc
+        sed "${i}d" "$bashrc" > file.tmp && mv file.tmp "$bashrc"
     done
-    echo 'bash ~/.welcome/welcome.sh' >> $bashrc
+    echo 'bash ~/.welcome/welcome.sh' >> "$bashrc"
 
-    lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' $zshrc | sed -e 's/:.*//g')
+    lines=$(grep -sn 'zsh ~/.welcome/welcome.sh' "$zshrc" | sed -e 's/:.*//g' && grep -sn 'zsh /home/$USER/.welcome/welcome.sh' "$zshrc" | sed -e 's/:.*//g')
     lines=$(printf '%s\n' "$lines" | sed '1!G;h;$!d' | sed ':a;N;$!ba;s/\n/ /g')
     for i in $lines; do
-        sed "${i}d" $zshrc > file.tmp && mv file.tmp $zshrc
+        sed "${i}d" "$zshrc" > file.tmp && mv file.tmp "$zshrc"
     done
-    echo 'zsh ~/.welcome/welcome.sh' >> $zshrc
+    echo 'zsh ~/.welcome/welcome.sh' >> "$zshrc"
 
     tput rc el ed
     echo -e "\e[32mUpdated to v$version! \e[0m"
@@ -131,7 +128,11 @@ this script!\e[0m Please use \e[3mBash \e[0mor \e[3mZsh.\e[0m\n" "${environment}
 fi
 
 # Check if already installed
-if ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc && ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc && ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc; then
+if  ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc &&
+    ! grep -qs 'zsh ~/.welcome/welcome.sh' $zshrc &&
+    ! grep -qs 'bash /home/$USER/.welcome/welcome.sh' $bashrc &&
+    ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
+then
     #==== Execute if first time installing...====#
 
     # To monitor number of downloads/updates
