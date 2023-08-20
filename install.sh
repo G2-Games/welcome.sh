@@ -134,10 +134,6 @@ if  ! grep -qs 'bash ~/.welcome/welcome.sh' $bashrc &&
     ! grep -qs 'zsh /home/$USER/.welcome/welcome.sh' $zshrc;
 then
     #==== Execute if first time installing...====#
-
-    # To monitor number of downloads/updates
-    curl https://g2games.dev/Assets/counter/counter.php
-
     tput rc
     echo "Welcome! Installing v$version in $environment..."
     tput sc
