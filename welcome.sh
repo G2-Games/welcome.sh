@@ -137,7 +137,7 @@ updates () {
 
     # Check for Fedora things
     if command -v dnf &> /dev/null; then
-      fedora=$(dnf list updates 2> /dev/null | wc -l)
+      fedora=$(dnf list --upgrades -C -q 2> /dev/null | wc -l)
       fedora=$((fedora-1))
     elif command -v yum &> /dev/null; then
       fedora=$(yum list updates 2> /dev/null | wc -l)
