@@ -175,7 +175,7 @@ else
         newCfgVer=$(curl -Ls https://github.com/G2-Games/welcome.sh/releases/download/v"${version}"/config.cfg | grep version | cut -d= -f2)
 
         univRead "Do you want to \e[36mupdate \e[35mwelcome.sh\e[0m? (\e[36mv$(getVersion)\e[0m => \e[32mv$version\e[0m)"
-        if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+        if ! [[ $REPLY =~ ^[Yy]$ ]] && ! [[ -z $REPLY ]]; then
             tput rc sc el ed
             echo -e "\e[31mUpdate cancelled.\e[0m"
             update=0
@@ -185,7 +185,7 @@ else
 
         if [[ $newCfgVer -gt $(grep version ~/.welcome/config.cfg 2> /dev/null | cut -d= -f2) ]]; then
             univRead "Newer \e[36mconfig\e[0m version available. Do you want to \e[31moverwrite\e[0m your \e[36mconfig\e[0m? \nA backup will be created in the \e[36m.welcome\e[0m folder."
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
+            if [[ $REPLY =~ ^[Yy]$ ]] || [[ -z $REPLY ]]; then
                 overcfg=1
             fi
         elif [[ $oldver -lt 100 ]]; then
